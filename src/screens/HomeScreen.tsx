@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { View, Text, Pressable, ScrollView, StyleSheet } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../types/navigation';
 import { useApp } from '../context/AppContext';
 import { TopBar } from '../components/TopBar';
 import { VinylRecord } from '../components/VinylRecord';
 import { Player } from '../components/Player';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Main'>;
-
-export function HomeScreen({ navigation }: Props) {
+export function HomeScreen() {
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { theme, t, tracks } = useApp();
   const [selected, setSelected] = useState<string | null>(null);
 
@@ -34,7 +34,6 @@ export function HomeScreen({ navigation }: Props) {
         </View>
       )}
 
-      {/* Мои треки */}
       <Text style={[styles.sectionTitle, { color: theme.text }]}>{t.myTracks}</Text>
 
       {tracks.length === 0 ? (
@@ -62,7 +61,6 @@ export function HomeScreen({ navigation }: Props) {
         ))
       )}
 
-      {/* Быстрый доступ */}
       <Text style={[styles.sectionTitle, { color: theme.text }]}>{t.quickAccess}</Text>
 
       <Pressable

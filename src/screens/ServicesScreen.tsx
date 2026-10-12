@@ -1,55 +1,91 @@
-import React from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import React, { useState } from 'react';
+import { View, FlatList, StyleSheet, Pressable, Text } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { RootStackParamList } from '../types/navigation';
 import { useApp } from '../context/AppContext';
 import { TopBar } from '../components/TopBar';
-
-const items = [
-  { icon: 'music-note', title: 'Треки', sub: 'Все песни' },
-  { icon: 'playlist-music', title: 'Плейлисты', sub: 'Твои подборки' },
-  { icon: 'account-music', title: 'Исполнители', sub: 'Артисты' },
-  { icon: 'album', title: 'Альбомы', sub: 'Релизы' },
-  { icon: 'guitar-electric', title: 'Жанры', sub: 'Рок, поп, хип-хоп' },
-  { icon: 'heart', title: 'Избранное', sub: 'Что лайкнул' },
-];
+import { SectionTitle } from '../components/SectionTitle';
+import { ServiceCard } from '../components/ServiceCard';
+import { EmptyState } from '../components/EmptyState';
+import { services } from '../data/services';
+import { Service } from '../types/service';
+import { spacing } from '../styles/theme';
 
 export function ServicesScreen() {
-  const { theme, t } = useApp();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const { theme } = useApp();
+  const [showAvailable, setShowAvailable] = useState(false);
+
+  const openService = (service: Service) => {
+    navigation.navigate('Details', {
+      serviceId: service.id,
+      title: service.title,
+    });
+  };
+
+  const visibleServices = showAvailable
+    ? services.filter(s => s.status !== 'unavailable')
+    : services;
 
   return (
-    <ScrollView
-      contentContainerStyle={[styles.container, { backgroundColor: theme.background }]}
-    >
-      <TopBar />
-      <Text style={[styles.title, { color: theme.text }]}>{t.servicesTitle}</Text>
-      <Text style={[styles.sub, { color: theme.mutedText }]}>{t.servicesSub}</Text>
-
-      <View style={styles.grid}>
-        {items.map((item, i) => (
-          <View
-            key={i}
-            style={[styles.card, { backgroundColor: theme.surface, borderColor: theme.border }]}
-          >
-            <MaterialCommunityIcons
-              name={item.icon as any}
-              size={32}
-              color={theme.primary}
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
+      <FlatList
+        data={visibleServices}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={styles.list}
+        ListHeaderComponent={
+          <>
+            <TopBar />
+            <SectionTitle
+              title="Сервисы"
+              subtitle="Всё что нужно для музыки"
             />
-            <Text style={[styles.cardTitle, { color: theme.text }]}>{item.title}</Text>
-            <Text style={[styles.cardSub, { color: theme.mutedText }]}>{item.sub}</Text>
-          </View>
-        ))}
-      </View>
-    </ScrollView>
+            <Pressable
+              onPress={() => setShowAvailable(v => !v)}
+              style={[
+                styles.filter,
+                {
+                  backgroundColor: showAvailable ? theme.primary : theme.surface,
+                  borderColor: theme.border,
+                },
+              ]}
+            >
+              <Text
+                style={[
+                  styles.filterText,
+                  { color: showAvailable ? '#FFF' : theme.text },
+                ]}
+              >
+                {showAvailable ? '★ Только доступные' : '☆ Все сервисы'}
+              </Text>
+            </Pressable>
+          </>
+        }
+        renderItem={({ item }) => (
+          <ServiceCard service={item} onPress={openService} />
+        )}
+        ListEmptyComponent={
+          <EmptyState
+            title="Ничего не найдено"
+            message="Попробуй изменить фильтр"
+          />
+        }
+      />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flexGrow: 1, padding: 24, paddingTop: 48 },
-  title:     { fontSize: 28, fontWeight: '900', marginBottom: 6 },
-  sub:       { fontSize: 15, marginBottom: 24 },
-  grid:      { flexDirection: 'row', flexWrap: 'wrap', gap: 12 },
-  card:      { width: '48%', padding: 16, borderRadius: 18, borderWidth: 1, minHeight: 130 },
-  cardTitle: { fontSize: 15, fontWeight: '900', marginTop: 12, marginBottom: 4 },
-  cardSub:   { fontSize: 12 }
+  container:  { flex: 1 },
+  list:       { padding: spacing.lg, paddingTop: 48 },
+  filter:     {
+    alignSelf: 'flex-start',
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    borderRadius: 20,
+    borderWidth: 1,
+    marginBottom: spacing.md,
+  },
+  filterText: { fontSize: 13, fontWeight: '900' },
 });

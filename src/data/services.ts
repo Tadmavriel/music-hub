@@ -9,4 +9,4 @@ export const services: Service[] = [
   { id: 'favorites',  title: 'Избранное',   description: 'Треки, которые ты лайкнул',    icon: 'heart',              status: 'available' },
   { id: 'history',    title: 'История',     description: 'Недавно прослушанное',         icon: 'history',            status: 'available' },
   { id: 'settings',   title: 'Настройки',   description: 'Эквалайзер и качество звука',  icon: 'cog',                status: 'unavailable' },
-];s
+];
