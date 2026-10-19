@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
   View, Text, TextInput, Pressable, StyleSheet,
-  KeyboardAvoidingView, Platform, ScrollView,
+  KeyboardAvoidingView, ScrollView,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -13,7 +13,7 @@ import { VinylRecord } from '../components/VinylRecord';
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
 export function LoginScreen({ navigation }: Props) {
-  const { theme, t, login: doLogin, hasAccount } = useApp();
+  const { theme, t, login: doLogin } = useApp();
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -32,21 +32,25 @@ export function LoginScreen({ navigation }: Props) {
   return (
     <KeyboardAvoidingView
       style={[styles.screen, { backgroundColor: theme.background }]}
-            behavior="padding"
+      behavior="padding"
     >
-      <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
+      <ScrollView
+        contentContainerStyle={styles.scroll}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
         <TopBar />
 
         <View style={styles.vinylWrap}>
-          <VinylRecord size={180} color={theme.primary} />
+          <VinylRecord size={160} color={theme.primary} />
         </View>
 
-        <Text style={[styles.appName, { color: theme.primary }]}>♪ {t.appName}</Text>
+        <Text style={[styles.appName, { color: theme.primary }]}>{t.appName}</Text>
         <Text style={[styles.title, { color: theme.text }]}>{t.welcome}</Text>
         <Text style={[styles.subtitle, { color: theme.mutedText }]}>{t.loginSubtitle}</Text>
 
         <View style={[styles.card, { backgroundColor: theme.surface, borderColor: theme.border }]}>
-          <Text style={[styles.label, { color: theme.text }]}>{t.login}</Text>
+          <Text style={[styles.label, { color: theme.mutedText }]}>{t.login}</Text>
           <TextInput
             style={[styles.input, { color: theme.text, borderColor: theme.border, backgroundColor: theme.surfaceMuted }]}
             placeholder={t.loginPlaceholder}
@@ -56,7 +60,7 @@ export function LoginScreen({ navigation }: Props) {
             onChangeText={(v) => { setLogin(v); setError(''); }}
           />
 
-          <Text style={[styles.label, { color: theme.text }]}>{t.password}</Text>
+          <Text style={[styles.label, { color: theme.mutedText }]}>{t.password}</Text>
           <View style={[styles.passRow, { borderColor: theme.border, backgroundColor: theme.surfaceMuted }]}>
             <TextInput
               style={[styles.passInput, { color: theme.text }]}
@@ -67,12 +71,16 @@ export function LoginScreen({ navigation }: Props) {
               value={password}
               onChangeText={(v) => { setPassword(v); setError(''); }}
             />
-            <Pressable onPress={() => setShowPassword(v => !v)} style={styles.eyeBtn}>
-              <Text style={styles.eyeText}>{showPassword ? '🙈' : '👁'}</Text>
+            <Pressable onPress={() => setShowPassword(v => !v)} style={styles.eyeBtn} hitSlop={8}>
+              <MaterialCommunityIcons
+                name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+                size={22}
+                color={theme.mutedText}
+              />
             </Pressable>
           </View>
 
-          {error ? <Text style={[styles.error, { color: '#FF6B9D' }]}>{error}</Text> : null}
+          {error ? <Text style={styles.error}>{error}</Text> : null}
 
           <Pressable
             style={({ pressed }) => [
@@ -85,7 +93,7 @@ export function LoginScreen({ navigation }: Props) {
           </Pressable>
 
           <Pressable onPress={() => navigation.replace('Register')} style={styles.linkBtn}>
-            <MaterialCommunityIcons name="account-plus" size={16} color={theme.primary} />
+            <MaterialCommunityIcons name="account-plus-outline" size={18} color={theme.primary} />
             <Text style={[styles.linkText, { color: theme.primary }]}>{t.registerButton}</Text>
           </Pressable>
         </View>
@@ -97,20 +105,19 @@ export function LoginScreen({ navigation }: Props) {
 const styles = StyleSheet.create({
   screen:     { flex: 1 },
   scroll:     { flexGrow: 1, padding: 24, paddingTop: 48, paddingBottom: 48 },
-  vinylWrap:  { alignItems: 'center', marginBottom: 24 },
-  appName:    { fontSize: 13, fontWeight: '900', letterSpacing: 2, textAlign: 'center', marginBottom: 10 },
-  title:      { fontSize: 28, fontWeight: '900', textAlign: 'center', marginBottom: 6 },
-  subtitle:   { fontSize: 15, textAlign: 'center', marginBottom: 28 },
-  card:       { padding: 24, borderRadius: 24, borderWidth: 1 },
-  label:      { fontSize: 13, fontWeight: '800', marginBottom: 8, marginTop: 12 },
-  input:      { height: 54, borderRadius: 14, borderWidth: 1, paddingHorizontal: 16, fontSize: 16 },
-  passRow:    { height: 54, flexDirection: 'row', alignItems: 'center', borderRadius: 14, borderWidth: 1 },
+  vinylWrap:  { alignItems: 'center', marginBottom: 20 },
+  appName:    { fontSize: 12, fontWeight: '800', letterSpacing: 3, textAlign: 'center', marginBottom: 8 },
+  title:      { fontSize: 26, fontWeight: '800', textAlign: 'center', marginBottom: 6 },
+  subtitle:   { fontSize: 15, textAlign: 'center', marginBottom: 24 },
+  card:       { padding: 22, borderRadius: 20, borderWidth: 1 },
+  label:      { fontSize: 12, fontWeight: '700', letterSpacing: 0.5, marginBottom: 8, marginTop: 12 },
+  input:      { height: 52, borderRadius: 12, borderWidth: 1, paddingHorizontal: 16, fontSize: 16 },
+  passRow:    { height: 52, flexDirection: 'row', alignItems: 'center', borderRadius: 12, borderWidth: 1 },
   passInput:  { flex: 1, height: '100%', paddingHorizontal: 16, fontSize: 16 },
   eyeBtn:     { paddingHorizontal: 14 },
-  eyeText:    { fontSize: 18 },
-  error:      { fontSize: 14, marginTop: 12, fontWeight: '700' },
-  button:     { height: 56, borderRadius: 16, justifyContent: 'center', alignItems: 'center', marginTop: 20 },
-  buttonText: { color: '#FFFFFF', fontSize: 16, fontWeight: '900', letterSpacing: 0.5 },
-  linkBtn:    { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, marginTop: 16, paddingVertical: 8 },
-  linkText:   { fontSize: 14, fontWeight: '800' }
+  error:      { fontSize: 14, marginTop: 12, fontWeight: '600', color: '#FF6B8A' },
+  button:     { height: 54, borderRadius: 14, justifyContent: 'center', alignItems: 'center', marginTop: 20 },
+  buttonText: { color: '#FFFFFF', fontSize: 16, fontWeight: '800', letterSpacing: 0.3 },
+  linkBtn:    { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, marginTop: 14, paddingVertical: 8 },
+  linkText:   { fontSize: 14, fontWeight: '700' }
 });

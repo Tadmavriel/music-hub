@@ -23,16 +23,16 @@ export type Theme = {
 
 export const themes: Record<ThemeName, Theme> = {
   dark: {
-    background: '#1A0511', surface: '#2D0718', surfaceMuted: '#3D0A1F',
-    border: '#5A1030', primary: '#FF2D6F', primaryPressed: '#E01E5A',
-    accent: '#FFD700', text: '#FFF5F8', mutedText: '#E8B5C6',
-    placeholder: '#B85A7A', white: '#FFFFFF'
+    background: '#120A0F', surface: '#1E1118', surfaceMuted: '#2A1822',
+    border: '#3A2430', primary: '#FF4D8D', primaryPressed: '#E63D7C',
+    accent: '#F5C451', text: '#F6EEF2', mutedText: '#B9A3AF',
+    placeholder: '#7D6572', white: '#FFFFFF'
   },
   light: {
-    background: '#FFF5F8', surface: '#FFFFFF', surfaceMuted: '#FFEBF2',
-    border: '#FFB8D0', primary: '#FF2D6F', primaryPressed: '#E01E5A',
-    accent: '#FF006E', text: '#1A0511', mutedText: '#8B4560',
-    placeholder: '#C88AA0', white: '#FFFFFF'
+    background: '#FAF6F8', surface: '#FFFFFF', surfaceMuted: '#F3ECF0',
+    border: '#E6D9E0', primary: '#E8336F', primaryPressed: '#CF2A62',
+    accent: '#C98A00', text: '#1C1218', mutedText: '#7A6571',
+    placeholder: '#A8949F', white: '#FFFFFF'
   }
 };
 
@@ -63,6 +63,7 @@ export const translations = {
     allFields: 'Заполните все поля',
     passwordsMismatch: 'Пароли не совпадают',
     home: 'Главная', services: 'Сервисы', settings: 'Настройки', profile: 'Профиль',
+    news: 'Новости',
     greeting: 'Сейчас играет',
     quickAccess: 'Быстрый доступ',
     allTracks: 'Все треки', allTracksSub: 'Полный список',
@@ -115,6 +116,7 @@ export const translations = {
     allFields: 'Fill in all fields',
     passwordsMismatch: 'Passwords do not match',
     home: 'Home', services: 'Services', settings: 'Settings', profile: 'Profile',
+    news: 'News',
     greeting: 'Now playing',
     quickAccess: 'Quick access',
     allTracks: 'All tracks', allTracksSub: 'Full list',
@@ -167,6 +169,7 @@ export const translations = {
     allFields: 'Барлық өрісті толтырыңыз',
     passwordsMismatch: 'Құпиясөздер сәйкес емес',
     home: 'Басты', services: 'Қызметтер', settings: 'Параметрлер', profile: 'Профиль',
+    news: 'Жаңалықтар',
     greeting: 'Қазір ойнап жатыр',
     quickAccess: 'Жылдам қатынау',
     allTracks: 'Барлық тректер', allTracksSub: 'Толық тізім',

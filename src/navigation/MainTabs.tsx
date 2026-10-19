@@ -1,13 +1,13 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { HomeScreen } from '../screens/HomeScreen';
 import { ServicesScreen } from '../screens/ServicesScreen';
-import { NewsScreen } from '../screens/NewsScreen';
+import { MusicNewsScreen } from '../screens/MusicNewsScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
 import type { MainTabParamList } from '../types/navigation';
 import { useApp } from '../context/AppContext';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
@@ -23,13 +23,14 @@ export function MainTabs() {
           backgroundColor: theme.surface,
           borderTopColor: theme.border,
           borderTopWidth: 1,
-	  height: 60 + insets.bottom,
+          height: 60 + insets.bottom,
           paddingBottom: insets.bottom + 6,
-          paddingTop: 10,
+          paddingTop: 8,
+          elevation: 0,
         },
         tabBarActiveTintColor: theme.primary,
         tabBarInactiveTintColor: theme.mutedText,
-        tabBarLabelStyle: { fontSize: 10, fontWeight: '800' },
+        tabBarLabelStyle: { fontSize: 11, fontWeight: '700' },
       }}
     >
       <Tab.Screen
@@ -54,9 +55,9 @@ export function MainTabs() {
       />
       <Tab.Screen
         name="News"
-        component={NewsScreen}
+        component={MusicNewsScreen}
         options={{
-          tabBarLabel: 'Новости',
+          tabBarLabel: t.news,
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="newspaper" size={size} color={color} />
           ),

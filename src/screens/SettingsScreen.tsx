@@ -6,7 +6,6 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { RootStackParamList } from '../types/navigation';
 import { useApp, FontScale } from '../context/AppContext';
-import { TopBar } from '../components/TopBar';
 
 export function SettingsScreen() {
   const {
@@ -50,13 +49,25 @@ export function SettingsScreen() {
 
   return (
     <ScrollView
-      contentContainerStyle={[styles.container, { backgroundColor: theme.background }]}
+      contentContainerStyle={[
+        styles.container,
+        { backgroundColor: theme.background, paddingTop: insets.top + 16 },
+      ]}
+      showsVerticalScrollIndicator={false}
     >
-      <TopBar />
-
-      <Text style={[styles.title, { color: theme.text, fontSize: fs(28) }]}>
-        {t.settingsTitle}
-      </Text>
+      <View style={styles.topRow}>
+        <Pressable
+          onPress={() => navigation.goBack()}
+          style={[styles.backBtn, { backgroundColor: theme.surface, borderColor: theme.border }]}
+          hitSlop={8}
+        >
+          <MaterialCommunityIcons name="arrow-left" size={22} color={theme.text} />
+        </Pressable>
+        <Text style={[styles.title, { color: theme.text, fontSize: fs(24) }]}>
+          {t.settingsTitle}
+        </Text>
+        <View style={styles.backBtn} />
+      </View>
 
       <Text style={[styles.sectionLabel, { color: theme.mutedText, fontSize: fs(12) }]}>
         {t.appearance.toUpperCase()}
@@ -155,10 +166,10 @@ export function SettingsScreen() {
 
       <Pressable
         onPress={handleReset}
-        style={[styles.resetBtn, { borderColor: theme.primary }]}
+        style={[styles.resetBtn, { borderColor: theme.border }]}
       >
-        <MaterialCommunityIcons name="restore" size={fs(20)} color={theme.primary} />
-        <Text style={[styles.resetText, { color: theme.primary, fontSize: fs(15) }]}>
+        <MaterialCommunityIcons name="restore" size={fs(20)} color={theme.mutedText} />
+        <Text style={[styles.resetText, { color: theme.mutedText, fontSize: fs(15) }]}>
           {t.resetSettings}
         </Text>
       </Pressable>
@@ -175,37 +186,24 @@ export function SettingsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container:    { flexGrow: 1, padding: 24, paddingTop: 48 },
-  title:        { fontWeight: '900', marginBottom: 24 },
-  sectionLabel: { fontWeight: '900', letterSpacing: 1.5, marginBottom: 8, marginTop: 16 },
-  block:        {
-    borderRadius: 16, borderWidth: 1, padding: 16, marginBottom: 8,
-  },
+  container:    { flexGrow: 1, paddingHorizontal: 24 },
+  topRow:       { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 },
+  backBtn:      { width: 42, height: 42, borderRadius: 21, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
+  title:        { fontWeight: '800' },
+  sectionLabel: { fontWeight: '800', letterSpacing: 1.5, marginBottom: 8, marginTop: 20 },
+  block:        { borderRadius: 16, borderWidth: 1, padding: 16, marginBottom: 8 },
   row:          { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   rowLeft:      { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  rowLabel:     { fontWeight: '800' },
+  rowLabel:     { fontWeight: '700' },
   rowHint:      { marginTop: 8 },
   fontRow:      { flexDirection: 'row', gap: 10, justifyContent: 'center' },
-  fontBtn:      {
-    flex: 1, height: 56, borderRadius: 12, borderWidth: 2,
-    alignItems: 'center', justifyContent: 'center',
-  },
-  fontBtnText:  { fontWeight: '900' },
-  langRow:      {
-    flexDirection: 'row', alignItems: 'center', gap: 12,
-    padding: 12, borderRadius: 10, marginBottom: 4,
-  },
+  fontBtn:      { flex: 1, height: 54, borderRadius: 12, borderWidth: 2, alignItems: 'center', justifyContent: 'center' },
+  fontBtnText:  { fontWeight: '800' },
+  langRow:      { flexDirection: 'row', alignItems: 'center', gap: 12, padding: 12, borderRadius: 10, marginBottom: 4 },
   langFlag:     { fontSize: 22 },
-  langLabel:    { flex: 1, fontWeight: '800' },
-  resetBtn:     {
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-    gap: 8, padding: 16, borderRadius: 16, borderWidth: 2,
-    marginTop: 24, marginBottom: 16,
-  },
-  resetText:    { fontWeight: '900' },
-  logoutBtn:    {
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-    gap: 8, padding: 16, borderRadius: 16,
-  },
-  logoutText:   { color: '#FFFFFF', fontWeight: '900' },
+  langLabel:    { flex: 1, fontWeight: '700' },
+  resetBtn:     { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, padding: 15, borderRadius: 14, borderWidth: 1, marginTop: 24, marginBottom: 12 },
+  resetText:    { fontWeight: '700' },
+  logoutBtn:    { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, padding: 16, borderRadius: 14 },
+  logoutText:   { color: '#FFFFFF', fontWeight: '800' },
 });
