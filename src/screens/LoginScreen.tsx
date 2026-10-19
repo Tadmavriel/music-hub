@@ -32,7 +32,7 @@ export function LoginScreen({ navigation }: Props) {
   return (
     <KeyboardAvoidingView
       style={[styles.screen, { backgroundColor: theme.background }]}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+            behavior="padding"
     >
       <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
         <TopBar />
@@ -96,7 +96,7 @@ export function LoginScreen({ navigation }: Props) {
 
 const styles = StyleSheet.create({
   screen:     { flex: 1 },
-  scroll:     { flexGrow: 1, padding: 24, paddingTop: 48 },
+  scroll:     { flexGrow: 1, padding: 24, paddingTop: 48, paddingBottom: 48 },
   vinylWrap:  { alignItems: 'center', marginBottom: 24 },
   appName:    { fontSize: 13, fontWeight: '900', letterSpacing: 2, textAlign: 'center', marginBottom: 10 },
   title:      { fontSize: 28, fontWeight: '900', textAlign: 'center', marginBottom: 6 },

@@ -27,7 +27,7 @@ export function Player({ uri, name }: { uri: string; name: string }) {
   return (
     <View style={[styles.player, { backgroundColor: theme.surface, borderColor: theme.border }]}>
       <View style={{ marginBottom: 16 }}>
-        <VinylRecord size={130} color={theme.primary} />
+       <VinylRecord size={130} color={theme.primary} isPlaying={isPlaying} />
       </View>
 
       <Text style={[styles.name, { color: theme.text, fontSize: fs(20) }]} numberOfLines={1}>

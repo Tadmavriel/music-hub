@@ -1,6 +1,10 @@
 import React from 'react';
 import { View, Text, Pressable, ScrollView, Switch, Alert, StyleSheet } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import type { RootStackParamList } from '../types/navigation';
 import { useApp, FontScale } from '../context/AppContext';
 import { TopBar } from '../components/TopBar';
 
@@ -9,8 +13,11 @@ export function SettingsScreen() {
     theme, themeName, setThemeName,
     fontScale, setFontScale, fontSizeMultiplier,
     language, setLanguage,
-    resetSettings, t
+    resetSettings, logout, t
   } = useApp();
+
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const insets = useSafeAreaInsets();
 
   const fs = (size: number) => size * fontSizeMultiplier;
 
@@ -21,10 +28,24 @@ export function SettingsScreen() {
     ]);
   };
 
-  const fontOptions: { key: FontScale; label: string; icon: string }[] = [
-    { key: 'small', label: 'A−', icon: 'format-font-size-decrease' },
-    { key: 'normal', label: 'A', icon: 'format-size' },
-    { key: 'large', label: 'A+', icon: 'format-font-size-increase' },
+  const handleLogout = () => {
+    Alert.alert(t.logout + '?', '', [
+      { text: t.no, style: 'cancel' },
+      {
+        text: t.yes,
+        style: 'destructive',
+        onPress: async () => {
+          await logout();
+          navigation.reset({ index: 0, routes: [{ name: 'Login' }] });
+        },
+      },
+    ]);
+  };
+
+  const fontOptions: { key: FontScale; label: string }[] = [
+    { key: 'small', label: 'A-' },
+    { key: 'normal', label: 'A' },
+    { key: 'large', label: 'A+' },
   ];
 
   return (
@@ -37,7 +58,6 @@ export function SettingsScreen() {
         {t.settingsTitle}
       </Text>
 
-      {/* СЕКЦИЯ: ТЕМА */}
       <Text style={[styles.sectionLabel, { color: theme.mutedText, fontSize: fs(12) }]}>
         {t.appearance.toUpperCase()}
       </Text>
@@ -65,7 +85,6 @@ export function SettingsScreen() {
         </Text>
       </View>
 
-      {/* СЕКЦИЯ: РАЗМЕР ШРИФТА */}
       <Text style={[styles.sectionLabel, { color: theme.mutedText, fontSize: fs(12) }]}>
         {t.fontScale.toUpperCase()}
       </Text>
@@ -105,7 +124,6 @@ export function SettingsScreen() {
         </Text>
       </View>
 
-      {/* СЕКЦИЯ: ЯЗЫК */}
       <Text style={[styles.sectionLabel, { color: theme.mutedText, fontSize: 12 }]}>
         {t.language.toUpperCase()}
       </Text>
@@ -135,7 +153,6 @@ export function SettingsScreen() {
         })}
       </View>
 
-      {/* КНОПКА СБРОСА */}
       <Pressable
         onPress={handleReset}
         style={[styles.resetBtn, { borderColor: theme.primary }]}
@@ -144,6 +161,14 @@ export function SettingsScreen() {
         <Text style={[styles.resetText, { color: theme.primary, fontSize: fs(15) }]}>
           {t.resetSettings}
         </Text>
+      </Pressable>
+
+      <Pressable
+        onPress={handleLogout}
+        style={[styles.logoutBtn, { backgroundColor: theme.primary, marginBottom: 24 + insets.bottom }]}
+      >
+        <MaterialCommunityIcons name="logout" size={fs(20)} color="#FFF" />
+        <Text style={[styles.logoutText, { fontSize: fs(15) }]}>{t.logout}</Text>
       </Pressable>
     </ScrollView>
   );
@@ -175,7 +200,12 @@ const styles = StyleSheet.create({
   resetBtn:     {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
     gap: 8, padding: 16, borderRadius: 16, borderWidth: 2,
-    marginTop: 24, marginBottom: 24,
+    marginTop: 24, marginBottom: 16,
   },
   resetText:    { fontWeight: '900' },
+  logoutBtn:    {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
+    gap: 8, padding: 16, borderRadius: 16,
+  },
+  logoutText:   { color: '#FFFFFF', fontWeight: '900' },
 });

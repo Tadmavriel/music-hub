@@ -7,11 +7,13 @@ import { NewsScreen } from '../screens/NewsScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
 import type { MainTabParamList } from '../types/navigation';
 import { useApp } from '../context/AppContext';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
 export function MainTabs() {
   const { theme, t } = useApp();
+  const insets = useSafeAreaInsets();
 
   return (
     <Tab.Navigator
@@ -21,8 +23,8 @@ export function MainTabs() {
           backgroundColor: theme.surface,
           borderTopColor: theme.border,
           borderTopWidth: 1,
-          height: 70,
-          paddingBottom: 10,
+	  height: 60 + insets.bottom,
+          paddingBottom: insets.bottom + 6,
           paddingTop: 10,
         },
         tabBarActiveTintColor: theme.primary,
