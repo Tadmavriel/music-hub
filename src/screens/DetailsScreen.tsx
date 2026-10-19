@@ -10,10 +10,15 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Details'>;
 
 export function DetailsScreen({ route, navigation }: Props) {
   const { serviceId, title } = route.params;
-  const { theme, t, tracks } = useApp();
-  const [selected, setSelected] = useState<string | null>(tracks[0]?.id ?? null);
+  const { theme, t, tracks, favorites, toggleFavorite } = useApp();
 
-  const current = tracks.find(tr => tr.id === selected);
+  const list = serviceId === 'favorites'
+    ? tracks.filter(tr => favorites.includes(tr.id))
+    : tracks;
+
+  const [selected, setSelected] = useState<string | null>(list[0]?.id ?? null);
+
+  const current = list.find(tr => tr.id === selected) ?? list[0];
 
   return (
     <ScrollView contentContainerStyle={[styles.container, { backgroundColor: theme.background }]}>
@@ -24,29 +29,39 @@ export function DetailsScreen({ route, navigation }: Props) {
 
       {current && <Player uri={current.uri} name={current.name} />}
 
-      {tracks.length === 0 ? (
+      {list.length === 0 ? (
         <Text style={[styles.empty, { color: theme.mutedText }]}>{t.noTracks}</Text>
       ) : (
-        tracks.map((tr, i) => (
-          <Pressable
-            key={tr.id}
-            onPress={() => setSelected(tr.id)}
-            style={[
-              styles.track,
-              { backgroundColor: theme.surface, borderColor: theme.border },
-              selected === tr.id && { borderColor: theme.primary, borderWidth: 2 }
-            ]}
-          >
-            <Text style={[styles.trackNum, { color: theme.primary }]}>{i + 1}</Text>
-            <View style={{ flex: 1 }}>
-              <Text style={[styles.trackName, { color: theme.text }]} numberOfLines={1}>{tr.name}</Text>
-              <Text style={[styles.trackArtist, { color: theme.mutedText }]}>Мой трек</Text>
-            </View>
-            {selected === tr.id && (
-              <MaterialCommunityIcons name="volume-high" size={20} color={theme.primary} />
-            )}
-          </Pressable>
-        ))
+        list.map((tr, i) => {
+          const liked = favorites.includes(tr.id);
+          return (
+            <Pressable
+              key={tr.id}
+              onPress={() => setSelected(tr.id)}
+              style={[
+                styles.track,
+                { backgroundColor: theme.surface, borderColor: theme.border },
+                current?.id === tr.id && { borderColor: theme.primary, borderWidth: 2 }
+              ]}
+            >
+              <Text style={[styles.trackNum, { color: theme.primary }]}>{i + 1}</Text>
+              <View style={{ flex: 1 }}>
+                <Text style={[styles.trackName, { color: theme.text }]} numberOfLines={1}>{tr.name}</Text>
+                <Text style={[styles.trackArtist, { color: theme.mutedText }]}>Мой трек</Text>
+              </View>
+              {current?.id === tr.id && (
+                <MaterialCommunityIcons name="volume-high" size={20} color={theme.primary} />
+              )}
+              <Pressable onPress={() => toggleFavorite(tr.id)} hitSlop={10}>
+                <MaterialCommunityIcons
+                  name={liked ? 'heart' : 'heart-outline'}
+                  size={24}
+                  color={liked ? theme.primary : theme.mutedText}
+                />
+              </Pressable>
+            </Pressable>
+          );
+        })
       )}
 
       <Pressable

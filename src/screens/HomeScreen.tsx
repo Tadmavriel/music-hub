@@ -11,7 +11,7 @@ import { Player } from '../components/Player';
 
 export function HomeScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const { theme, t, tracks, fontSizeMultiplier } = useApp();
+  const { theme, t, tracks, favorites, toggleFavorite, fontSizeMultiplier } = useApp();
   const [selected, setSelected] = useState<string | null>(null);
 
   const fs = (size: number) => size * fontSizeMultiplier;
@@ -48,31 +48,41 @@ export function HomeScreen() {
           {t.noTracks}
         </Text>
       ) : (
-        tracks.map((tr, i) => (
-          <Pressable
-            key={tr.id}
-            onPress={() => setSelected(tr.id)}
-            style={[
-              styles.trackRow,
-              { backgroundColor: theme.surface, borderColor: theme.border },
-              current?.id === tr.id && { borderColor: theme.primary, borderWidth: 2 }
-            ]}
-          >
-            <Text style={[styles.trackNum, { color: theme.primary, fontSize: fs(14) }]}>
-              {i + 1}
-            </Text>
-            <MaterialCommunityIcons name="music-note" size={fs(20)} color={theme.primary} />
-            <Text
-              style={[styles.trackName, { color: theme.text, fontSize: fs(14) }]}
-              numberOfLines={1}
+        tracks.map((tr, i) => {
+          const liked = favorites.includes(tr.id);
+          return (
+            <Pressable
+              key={tr.id}
+              onPress={() => setSelected(tr.id)}
+              style={[
+                styles.trackRow,
+                { backgroundColor: theme.surface, borderColor: theme.border },
+                current?.id === tr.id && { borderColor: theme.primary, borderWidth: 2 }
+              ]}
             >
-              {tr.name}
-            </Text>
-            {current?.id === tr.id && (
-              <MaterialCommunityIcons name="volume-high" size={fs(20)} color={theme.primary} />
-            )}
-          </Pressable>
-        ))
+              <Text style={[styles.trackNum, { color: theme.primary, fontSize: fs(14) }]}>
+                {i + 1}
+              </Text>
+              <MaterialCommunityIcons name="music-note" size={fs(20)} color={theme.primary} />
+              <Text
+                style={[styles.trackName, { color: theme.text, fontSize: fs(14) }]}
+                numberOfLines={1}
+              >
+                {tr.name}
+              </Text>
+              {current?.id === tr.id && (
+                <MaterialCommunityIcons name="volume-high" size={fs(20)} color={theme.primary} />
+              )}
+              <Pressable onPress={() => toggleFavorite(tr.id)} hitSlop={10}>
+                <MaterialCommunityIcons
+                  name={liked ? 'heart' : 'heart-outline'}
+                  size={fs(24)}
+                  color={liked ? theme.primary : theme.mutedText}
+                />
+              </Pressable>
+            </Pressable>
+          );
+        })
       )}
 
       <Text style={[styles.sectionTitle, { color: theme.text, fontSize: fs(16) }]}>
@@ -94,6 +104,22 @@ export function HomeScreen() {
         </View>
         <MaterialCommunityIcons name="chevron-right" size={fs(24)} color={theme.primary} />
       </Pressable>
+
+      <Pressable
+        style={[styles.quickCard, { backgroundColor: theme.surface, borderColor: theme.border }]}
+        onPress={() => navigation.navigate('Details', { serviceId: 'favorites', title: t.favorites })}
+      >
+        <MaterialCommunityIcons name="heart" size={fs(26)} color={theme.primary} style={styles.quickHeart} />
+        <View style={{ flex: 1 }}>
+          <Text style={[styles.quickTitle, { color: theme.text, fontSize: fs(16) }]}>
+            {t.favorites}
+          </Text>
+          <Text style={[styles.quickSub, { color: theme.mutedText, fontSize: fs(12) }]}>
+            {favorites.length} · {t.favoritesSub}
+          </Text>
+        </View>
+        <MaterialCommunityIcons name="chevron-right" size={fs(24)} color={theme.primary} />
+      </Pressable>
     </ScrollView>
   );
 }
@@ -111,6 +137,7 @@ const styles = StyleSheet.create({
   trackName:    { flex: 1, fontWeight: '700' },
   quickCard:    { flexDirection: 'row', alignItems: 'center', padding: 16, borderRadius: 16, borderWidth: 1, marginBottom: 10, gap: 14 },
   quickIcon:    { fontWeight: '900', width: 32, textAlign: 'center' },
+  quickHeart:   { width: 32, textAlign: 'center' },
   quickTitle:   { fontWeight: '800', marginBottom: 2 },
   quickSub:     { }
 });

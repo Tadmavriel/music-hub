@@ -13,6 +13,7 @@ const SESSION_KEY = '@music/session';
 const TRACKS_KEY = '@music/tracks';
 const PROFILE_KEY = '@music/profile';
 const SETTINGS_KEY = '@music/settings';
+const FAVORITES_KEY = '@music/favorites';
 
 export type Theme = {
   background: string; surface: string; surfaceMuted: string; border: string;
@@ -218,6 +219,8 @@ type AppContextType = {
   isReady: boolean;
   hasAccount: boolean;
   tracks: Track[];
+  favorites: string[];
+  toggleFavorite: (id: string) => Promise<void>;
   login: (login: string, password: string) => Promise<string | null>;
   register: (login: string, password: string) => Promise<string | null>;
   logout: () => Promise<void>;
@@ -242,16 +245,18 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [isReady, setIsReady] = useState(false);
   const [tracks, setTracks] = useState<Track[]>([]);
   const [profile, setProfile] = useState<Profile>(DEFAULT_PROFILE);
+  const [favorites, setFavorites] = useState<string[]>([]);
 
   useEffect(() => {
     (async () => {
       try {
-        const [acc, sess, trk, prof, settings] = await AsyncStorage.multiGet([
-          ACCOUNT_KEY, SESSION_KEY, TRACKS_KEY, PROFILE_KEY, SETTINGS_KEY
+        const [acc, sess, trk, prof, settings, fav] = await AsyncStorage.multiGet([
+          ACCOUNT_KEY, SESSION_KEY, TRACKS_KEY, PROFILE_KEY, SETTINGS_KEY, FAVORITES_KEY
         ]);
         setHasAccount(!!acc[1]);
         if (sess[1]) setUser(sess[1]);
         if (trk[1]) setTracks(JSON.parse(trk[1]));
+        if (fav[1]) setFavorites(JSON.parse(fav[1]));
         if (prof[1]) setProfile(JSON.parse(prof[1]));
         else if (acc[1]) {
           const a: Account = JSON.parse(acc[1]);
@@ -311,10 +316,21 @@ export function AppProvider({ children }: { children: ReactNode }) {
     await AsyncStorage.setItem(TRACKS_KEY, JSON.stringify(next));
   };
 
+  const toggleFavorite = async (id: string) => {
+    const next = favorites.includes(id)
+      ? favorites.filter(f => f !== id)
+      : [id, ...favorites];
+    setFavorites(next);
+    await AsyncStorage.setItem(FAVORITES_KEY, JSON.stringify(next));
+  };
+
   const removeTrack = async (id: string) => {
     const next = tracks.filter(t => t.id !== id);
     setTracks(next);
     await AsyncStorage.setItem(TRACKS_KEY, JSON.stringify(next));
+    const nextFav = favorites.filter(f => f !== id);
+    setFavorites(nextFav);
+    await AsyncStorage.setItem(FAVORITES_KEY, JSON.stringify(nextFav));
   };
 
   const renameTrack = async (id: string, newName: string) => {
@@ -346,7 +362,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       resetSettings,
       theme: themes[themeName], t: translations[language],
       nextLanguage, toggleTheme,
-      user, profile, isReady, hasAccount, tracks,
+      user, profile, isReady, hasAccount, tracks, favorites, toggleFavorite,
       login, register, logout, addTrack, removeTrack, renameTrack, updateProfile
     }}>
       {children}
