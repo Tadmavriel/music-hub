@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { colors, spacing } from '../styles/theme';
+import { useApp } from '../context/AppContext';
 
 type Props = {
   icon?: string;
@@ -10,17 +10,24 @@ type Props = {
 };
 
 export function EmptyState({ icon = 'music-off', title, message }: Props) {
+  const { theme, fontSizeMultiplier } = useApp();
+  const fs = (size: number) => size * fontSizeMultiplier;
+
   return (
     <View style={styles.container}>
-      <MaterialCommunityIcons name={icon as any} size={56} color={colors.muted} />
-      <Text style={styles.title}>{title}</Text>
-      {message ? <Text style={styles.message}>{message}</Text> : null}
+      <MaterialCommunityIcons name={icon as any} size={fs(56)} color={theme.mutedText} />
+      <Text style={[styles.title, { color: theme.text, fontSize: fs(18) }]}>{title}</Text>
+      {message ? (
+        <Text style={[styles.message, { color: theme.mutedText, fontSize: fs(14) }]}>
+          {message}
+        </Text>
+      ) : null}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { alignItems: 'center', paddingVertical: spacing.xl * 2 },
-  title:     { color: colors.text, fontSize: 18, fontWeight: '900', marginTop: spacing.md },
-  message:   { color: colors.muted, fontSize: 14, marginTop: spacing.xs, textAlign: 'center' },
+  container: { alignItems: 'center', paddingVertical: 64 },
+  title:     { fontWeight: '900', marginTop: 16 },
+  message:   { marginTop: 6, textAlign: 'center' },
 });

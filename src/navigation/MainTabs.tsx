@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { HomeScreen } from '../screens/HomeScreen';
 import { ServicesScreen } from '../screens/ServicesScreen';
+import { NewsScreen } from '../screens/NewsScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
 import type { MainTabParamList } from '../types/navigation';
 import { useApp } from '../context/AppContext';
@@ -26,7 +27,7 @@ export function MainTabs() {
         },
         tabBarActiveTintColor: theme.primary,
         tabBarInactiveTintColor: theme.mutedText,
-        tabBarLabelStyle: { fontSize: 11, fontWeight: '800' },
+        tabBarLabelStyle: { fontSize: 10, fontWeight: '800' },
       }}
     >
       <Tab.Screen
@@ -46,6 +47,16 @@ export function MainTabs() {
           tabBarLabel: t.services,
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="music-box-multiple" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="News"
+        component={NewsScreen}
+        options={{
+          tabBarLabel: 'Новости',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="newspaper" size={size} color={color} />
           ),
         }}
       />

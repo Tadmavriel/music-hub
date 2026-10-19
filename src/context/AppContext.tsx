@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export type Language = 'ru' | 'en' | 'kk';
 export type ThemeName = 'light' | 'dark';
+export type FontScale = 'small' | 'normal' | 'large';
 export type Account = { login: string; password: string };
 export type Track = { id: string; name: string; uri: string; size?: number };
 export type Profile = { displayName: string; avatar: string | null; bio: string };
@@ -11,6 +12,7 @@ const ACCOUNT_KEY = '@music/account';
 const SESSION_KEY = '@music/session';
 const TRACKS_KEY = '@music/tracks';
 const PROFILE_KEY = '@music/profile';
+const SETTINGS_KEY = '@music/settings';
 
 export type Theme = {
   background: string; surface: string; surfaceMuted: string; border: string;
@@ -33,6 +35,12 @@ export const themes: Record<ThemeName, Theme> = {
   }
 };
 
+export const fontSizes: Record<FontScale, number> = {
+  small: 0.85,
+  normal: 1,
+  large: 1.25,
+};
+
 export const translations = {
   ru: {
     appName: 'MUSIC HUB',
@@ -53,7 +61,7 @@ export const translations = {
     repeatPasswordPlaceholder: 'Ещё раз пароль',
     allFields: 'Заполните все поля',
     passwordsMismatch: 'Пароли не совпадают',
-    home: 'Главная', services: 'Сервисы', profile: 'Профиль',
+    home: 'Главная', services: 'Сервисы', settings: 'Настройки', profile: 'Профиль',
     greeting: 'Сейчас играет',
     quickAccess: 'Быстрый доступ',
     allTracks: 'Все треки', allTracksSub: 'Полный список',
@@ -62,27 +70,27 @@ export const translations = {
     servicesTitle: 'Сервисы', servicesSub: 'Всё для музыки',
     profileTitle: 'Профиль',
     tracks: 'Треков', playlistsCount: 'Плейлистов', favoritesCount: 'Избранных',
-    settings: 'Настройки', language: 'Язык', theme: 'Тема',
-    themeLight: 'Светлая', themeDark: 'Тёмная',
+    settingsTitle: 'Настройки',
+    appearance: 'Внешний вид',
+    theme: 'Тема', themeLight: 'Светлая', themeDark: 'Тёмная',
+    fontScale: 'Размер шрифта',
+    fontSmall: 'Маленький', fontNormal: 'Обычный', fontLarge: 'Большой',
+    resetSettings: 'Сбросить настройки',
+    resetConfirm: 'Сбросить все настройки?',
+    language: 'Язык', langRu: 'Русский', langEn: 'English', langKk: 'Қазақша',
     logout: 'Выйти', back: 'Назад',
-    langRu: 'Русский', langEn: 'English', langKk: 'Қазақша',
     uploadTrack: 'Загрузить трек',
     myTracks: 'Мои треки',
     noTracks: 'Пока нет загруженных треков',
     remove: 'Удалить',
-    editProfile: 'Изменить профиль',
     changeName: 'Изменить имя',
     changePhoto: 'Изменить фото',
     changeBio: 'Изменить описание',
-    save: 'Сохранить',
-    cancel: 'Отмена',
-    newName: 'Новое имя',
-    newBio: 'Коротко о себе',
+    save: 'Сохранить', cancel: 'Отмена',
+    newName: 'Новое имя', newBio: 'Коротко о себе',
     renameTrack: 'Переименовать',
     newTrackName: 'Новое название трека',
     trackName: 'Название трека',
-    pickPhoto: 'Выбрать из галереи',
-    takePhoto: 'Сделать фото',
     confirmDelete: 'Удалить?',
     yes: 'Да', no: 'Нет'
   },
@@ -105,7 +113,7 @@ export const translations = {
     repeatPasswordPlaceholder: 'Repeat password',
     allFields: 'Fill in all fields',
     passwordsMismatch: 'Passwords do not match',
-    home: 'Home', services: 'Services', profile: 'Profile',
+    home: 'Home', services: 'Services', settings: 'Settings', profile: 'Profile',
     greeting: 'Now playing',
     quickAccess: 'Quick access',
     allTracks: 'All tracks', allTracksSub: 'Full list',
@@ -114,27 +122,27 @@ export const translations = {
     servicesTitle: 'Services', servicesSub: 'Everything for music',
     profileTitle: 'Profile',
     tracks: 'Tracks', playlistsCount: 'Playlists', favoritesCount: 'Favorites',
-    settings: 'Settings', language: 'Language', theme: 'Theme',
-    themeLight: 'Light', themeDark: 'Dark',
+    settingsTitle: 'Settings',
+    appearance: 'Appearance',
+    theme: 'Theme', themeLight: 'Light', themeDark: 'Dark',
+    fontScale: 'Font size',
+    fontSmall: 'Small', fontNormal: 'Normal', fontLarge: 'Large',
+    resetSettings: 'Reset settings',
+    resetConfirm: 'Reset all settings?',
+    language: 'Language', langRu: 'Русский', langEn: 'English', langKk: 'Қазақша',
     logout: 'Sign out', back: 'Back',
-    langRu: 'Русский', langEn: 'English', langKk: 'Қазақша',
     uploadTrack: 'Upload track',
     myTracks: 'My tracks',
     noTracks: 'No tracks yet',
     remove: 'Remove',
-    editProfile: 'Edit profile',
     changeName: 'Change name',
     changePhoto: 'Change photo',
     changeBio: 'Change bio',
-    save: 'Save',
-    cancel: 'Cancel',
-    newName: 'New name',
-    newBio: 'Short bio',
+    save: 'Save', cancel: 'Cancel',
+    newName: 'New name', newBio: 'Short bio',
     renameTrack: 'Rename',
     newTrackName: 'New track name',
     trackName: 'Track name',
-    pickPhoto: 'Pick from gallery',
-    takePhoto: 'Take photo',
     confirmDelete: 'Delete?',
     yes: 'Yes', no: 'No'
   },
@@ -157,7 +165,7 @@ export const translations = {
     repeatPasswordPlaceholder: 'Қайта енгізіңіз',
     allFields: 'Барлық өрісті толтырыңыз',
     passwordsMismatch: 'Құпиясөздер сәйкес емес',
-    home: 'Басты', services: 'Қызметтер', profile: 'Профиль',
+    home: 'Басты', services: 'Қызметтер', settings: 'Параметрлер', profile: 'Профиль',
     greeting: 'Қазір ойнап жатыр',
     quickAccess: 'Жылдам қатынау',
     allTracks: 'Барлық тректер', allTracksSub: 'Толық тізім',
@@ -166,27 +174,27 @@ export const translations = {
     servicesTitle: 'Қызметтер', servicesSub: 'Музыка үшін бәрі',
     profileTitle: 'Профиль',
     tracks: 'Тректер', playlistsCount: 'Плейлисттер', favoritesCount: 'Таңдаулылар',
-    settings: 'Параметрлер', language: 'Тіл', theme: 'Тақырып',
-    themeLight: 'Ашық', themeDark: 'Қараңғы',
+    settingsTitle: 'Параметрлер',
+    appearance: 'Сыртқы түрі',
+    theme: 'Тақырып', themeLight: 'Ашық', themeDark: 'Қараңғы',
+    fontScale: 'Қаріп өлшемі',
+    fontSmall: 'Кіші', fontNormal: 'Қалыпты', fontLarge: 'Үлкен',
+    resetSettings: 'Параметрлерді қалпына келтіру',
+    resetConfirm: 'Барлық параметрлерді қалпына келтіру?',
+    language: 'Тіл', langRu: 'Русский', langEn: 'English', langKk: 'Қазақша',
     logout: 'Шығу', back: 'Артқа',
-    langRu: 'Русский', langEn: 'English', langKk: 'Қазақша',
     uploadTrack: 'Трек жүктеу',
     myTracks: 'Менің тректерім',
     noTracks: 'Әзірге тректер жоқ',
     remove: 'Жою',
-    editProfile: 'Профильді өзгерту',
     changeName: 'Атын өзгерту',
     changePhoto: 'Фотосуретті өзгерту',
     changeBio: 'Сипаттаманы өзгерту',
-    save: 'Сақтау',
-    cancel: 'Болдырмау',
-    newName: 'Жаңа аты',
-    newBio: 'Өзіңіз туралы қысқаша',
+    save: 'Сақтау', cancel: 'Болдырмау',
+    newName: 'Жаңа аты', newBio: 'Өзіңіз туралы қысқаша',
     renameTrack: 'Қайта атау',
     newTrackName: 'Трек атауы',
     trackName: 'Трек атауы',
-    pickPhoto: 'Галереядан таңдау',
-    takePhoto: 'Фото түсіру',
     confirmDelete: 'Жою?',
     yes: 'Иә', no: 'Жоқ'
   }
@@ -197,6 +205,10 @@ type AppContextType = {
   setLanguage: (l: Language) => void;
   themeName: ThemeName;
   setThemeName: (t: ThemeName) => void;
+  fontScale: FontScale;
+  setFontScale: (f: FontScale) => void;
+  fontSizeMultiplier: number;
+  resetSettings: () => void;
   theme: Theme;
   t: typeof translations.ru;
   nextLanguage: () => void;
@@ -219,9 +231,12 @@ const AppContext = createContext<AppContextType | null>(null);
 
 const DEFAULT_PROFILE: Profile = { displayName: '', avatar: null, bio: '' };
 
+type Settings = { theme: ThemeName; fontScale: FontScale; language: Language };
+
 export function AppProvider({ children }: { children: ReactNode }) {
   const [language, setLanguage] = useState<Language>('ru');
   const [themeName, setThemeName] = useState<ThemeName>('dark');
+  const [fontScale, setFontScale] = useState<FontScale>('normal');
   const [user, setUser] = useState<string | null>(null);
   const [hasAccount, setHasAccount] = useState(false);
   const [isReady, setIsReady] = useState(false);
@@ -231,8 +246,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     (async () => {
       try {
-        const [acc, sess, trk, prof] = await AsyncStorage.multiGet([
-          ACCOUNT_KEY, SESSION_KEY, TRACKS_KEY, PROFILE_KEY
+        const [acc, sess, trk, prof, settings] = await AsyncStorage.multiGet([
+          ACCOUNT_KEY, SESSION_KEY, TRACKS_KEY, PROFILE_KEY, SETTINGS_KEY
         ]);
         setHasAccount(!!acc[1]);
         if (sess[1]) setUser(sess[1]);
@@ -242,10 +257,22 @@ export function AppProvider({ children }: { children: ReactNode }) {
           const a: Account = JSON.parse(acc[1]);
           setProfile({ ...DEFAULT_PROFILE, displayName: a.login });
         }
+        if (settings[1]) {
+          const s: Settings = JSON.parse(settings[1]);
+          if (s.theme) setThemeName(s.theme);
+          if (s.fontScale) setFontScale(s.fontScale);
+          if (s.language) setLanguage(s.language);
+        }
       } catch {}
       finally { setIsReady(true); }
     })();
   }, []);
+
+  useEffect(() => {
+    if (!isReady) return;
+    const settings: Settings = { theme: themeName, fontScale, language };
+    AsyncStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+  }, [themeName, fontScale, language, isReady]);
 
   const login = async (loginStr: string, password: string) => {
     try {
@@ -255,11 +282,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
       if (acc.login !== loginStr.trim() || acc.password !== password) return 'badCreds';
       await AsyncStorage.setItem(SESSION_KEY, acc.login);
       setUser(acc.login);
-      if (!profile.displayName) {
-        const p = { ...DEFAULT_PROFILE, displayName: acc.login };
-        setProfile(p);
-        await AsyncStorage.setItem(PROFILE_KEY, JSON.stringify(p));
-      }
       return null;
     } catch { return 'error'; }
   };
@@ -307,12 +329,21 @@ export function AppProvider({ children }: { children: ReactNode }) {
     await AsyncStorage.setItem(PROFILE_KEY, JSON.stringify(next));
   };
 
+  const resetSettings = () => {
+    setThemeName('dark');
+    setFontScale('normal');
+    setLanguage('ru');
+  };
+
   const nextLanguage = () => setLanguage(l => l === 'ru' ? 'en' : l === 'en' ? 'kk' : 'ru');
   const toggleTheme = () => setThemeName(t => t === 'dark' ? 'light' : 'dark');
 
   return (
     <AppContext.Provider value={{
       language, setLanguage, themeName, setThemeName,
+      fontScale, setFontScale,
+      fontSizeMultiplier: fontSizes[fontScale],
+      resetSettings,
       theme: themes[themeName], t: translations[language],
       nextLanguage, toggleTheme,
       user, profile, isReady, hasAccount, tracks,

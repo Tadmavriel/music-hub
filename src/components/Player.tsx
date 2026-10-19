@@ -6,22 +6,16 @@ import { useApp } from '../context/AppContext';
 import { VinylRecord } from './VinylRecord';
 
 export function Player({ uri, name }: { uri: string; name: string }) {
-  const { theme } = useApp();
+  const { theme, fontSizeMultiplier } = useApp();
   const player = useAudioPlayer(uri);
   const status = useAudioPlayerStatus(player);
 
+  const fs = (size: number) => size * fontSizeMultiplier;
   const isPlaying = status?.playing ?? false;
   const progress = status?.duration > 0 ? (status.currentTime / status.duration) * 100 : 0;
 
-  const toggle = () => {
-    if (isPlaying) player.pause();
-    else player.play();
-  };
-
-  const restart = () => {
-    player.seekTo(0);
-    player.play();
-  };
+  const toggle = () => { if (isPlaying) player.pause(); else player.play(); };
+  const restart = () => { player.seekTo(0); player.play(); };
 
   const fmt = (s: number) => {
     if (!s || isNaN(s)) return '0:00';
@@ -36,20 +30,28 @@ export function Player({ uri, name }: { uri: string; name: string }) {
         <VinylRecord size={130} color={theme.primary} />
       </View>
 
-      <Text style={[styles.name, { color: theme.text }]} numberOfLines={1}>{name}</Text>
-      <Text style={[styles.artist, { color: theme.mutedText }]}>Мой трек</Text>
+      <Text style={[styles.name, { color: theme.text, fontSize: fs(20) }]} numberOfLines={1}>
+        {name}
+      </Text>
+      <Text style={[styles.artist, { color: theme.mutedText, fontSize: fs(13) }]}>
+        Мой трек
+      </Text>
 
       <View style={styles.progressRow}>
-        <Text style={[styles.time, { color: theme.mutedText }]}>{fmt(status?.currentTime ?? 0)}</Text>
+        <Text style={[styles.time, { color: theme.mutedText, fontSize: fs(11) }]}>
+          {fmt(status?.currentTime ?? 0)}
+        </Text>
         <View style={[styles.bar, { backgroundColor: theme.surfaceMuted }]}>
           <View style={[styles.fill, { backgroundColor: theme.primary, width: `${progress}%` }]} />
         </View>
-        <Text style={[styles.time, { color: theme.mutedText }]}>{fmt(status?.duration ?? 0)}</Text>
+        <Text style={[styles.time, { color: theme.mutedText, fontSize: fs(11) }]}>
+          {fmt(status?.duration ?? 0)}
+        </Text>
       </View>
 
       <View style={styles.controls}>
         <Pressable style={styles.ctrl} onPress={restart}>
-          <MaterialCommunityIcons name="restart" size={28} color={theme.text} />
+          <MaterialCommunityIcons name="restart" size={fs(28)} color={theme.text} />
         </Pressable>
         <Pressable
           onPress={toggle}
@@ -57,12 +59,12 @@ export function Player({ uri, name }: { uri: string; name: string }) {
         >
           <MaterialCommunityIcons
             name={isPlaying ? 'pause' : 'play'}
-            size={30}
+            size={fs(30)}
             color="#FFF"
           />
         </Pressable>
         <Pressable style={styles.ctrl} onPress={() => player.seekTo(0)}>
-          <MaterialCommunityIcons name="skip-backward" size={28} color={theme.text} />
+          <MaterialCommunityIcons name="skip-backward" size={fs(28)} color={theme.text} />
         </Pressable>
       </View>
     </View>
@@ -71,10 +73,10 @@ export function Player({ uri, name }: { uri: string; name: string }) {
 
 const styles = StyleSheet.create({
   player:     { borderRadius: 24, borderWidth: 1, padding: 20, alignItems: 'center' },
-  name:       { fontSize: 20, fontWeight: '900', marginBottom: 4, textAlign: 'center' },
-  artist:     { fontSize: 13, marginBottom: 20 },
+  name:       { fontWeight: '900', marginBottom: 4, textAlign: 'center' },
+  artist:     { marginBottom: 20 },
   progressRow:{ flexDirection: 'row', alignItems: 'center', width: '100%', gap: 10, marginBottom: 16 },
-  time:       { fontSize: 11, fontWeight: '700' },
+  time:       { fontWeight: '700' },
   bar:        { flex: 1, height: 4, borderRadius: 2, overflow: 'hidden' },
   fill:       { height: 4, borderRadius: 2 },
   controls:   { flexDirection: 'row', alignItems: 'center', gap: 24 },

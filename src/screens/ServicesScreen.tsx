@@ -14,8 +14,10 @@ import { spacing } from '../styles/theme';
 
 export function ServicesScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const { theme } = useApp();
+  const { theme, fontSizeMultiplier } = useApp();
   const [showAvailable, setShowAvailable] = useState(false);
+
+  const fs = (size: number) => size * fontSizeMultiplier;
 
   const openService = (service: Service) => {
     navigation.navigate('Details', {
@@ -54,7 +56,7 @@ export function ServicesScreen() {
               <Text
                 style={[
                   styles.filterText,
-                  { color: showAvailable ? '#FFF' : theme.text },
+                  { color: showAvailable ? '#FFF' : theme.text, fontSize: fs(13) },
                 ]}
               >
                 {showAvailable ? '★ Только доступные' : '☆ Все сервисы'}
@@ -87,5 +89,5 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: spacing.md,
   },
-  filterText: { fontSize: 13, fontWeight: '900' },
+  filterText: { fontWeight: '900' },
 });

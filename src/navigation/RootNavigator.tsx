@@ -4,6 +4,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { LoginScreen } from '../screens/LoginScreen';
 import { RegisterScreen } from '../screens/RegisterScreen';
 import { DetailsScreen } from '../screens/DetailsScreen';
+import { NewsDetailsScreen } from '../screens/NewsDetailsScreen';
+import { SettingsScreen } from '../screens/SettingsScreen';
 import { MainTabs } from './MainTabs';
 import type { RootStackParamList } from '../types/navigation';
 
@@ -23,6 +25,8 @@ export function RootNavigator() {
         <Stack.Screen name="Register" component={RegisterScreen} />
         <Stack.Screen name="Main" component={MainTabs} />
         <Stack.Screen name="Details" component={DetailsScreen} />
+        <Stack.Screen name="NewsDetails" component={NewsDetailsScreen} />
+        <Stack.Screen name="Settings" component={SettingsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

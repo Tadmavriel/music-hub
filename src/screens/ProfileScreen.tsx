@@ -6,16 +6,18 @@ import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../types/navigation';
-import { useApp, Language } from '../context/AppContext';
+import { useApp } from '../context/AppContext';
 import { TopBar } from '../components/TopBar';
 import { EditModal } from '../components/EditModal';
 
 export function ProfileScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const {
-    theme, themeName, setThemeName, language, setLanguage, t,
-    user, profile, tracks, logout, addTrack, removeTrack, renameTrack, updateProfile
+    theme, t, user, profile, tracks, logout,
+    addTrack, removeTrack, renameTrack, updateProfile, fontSizeMultiplier
   } = useApp();
+
+  const fs = (size: number) => size * fontSizeMultiplier;
 
   const [editVisible, setEditVisible] = useState(false);
   const [editMode, setEditMode] = useState<'name' | 'bio' | 'track'>('name');
@@ -109,12 +111,6 @@ export function ProfileScreen() {
     ]);
   };
 
-  const langs: { code: Language; label: string; flag: string }[] = [
-    { code: 'ru', label: t.langRu, flag: '🇷🇺' },
-    { code: 'en', label: t.langEn, flag: '🇬🇧' },
-    { code: 'kk', label: t.langKk, flag: '🇰🇿' },
-  ];
-
   return (
     <ScrollView contentContainerStyle={[styles.container, { backgroundColor: theme.background }]}>
       <TopBar />
@@ -124,7 +120,7 @@ export function ProfileScreen() {
           <Image source={{ uri: profile.avatar }} style={[styles.avatar, { borderColor: theme.primary }]} />
         ) : (
           <View style={[styles.avatar, { backgroundColor: theme.surface, borderColor: theme.primary }]}>
-            <Text style={[styles.avatarText, { color: theme.primary }]}>
+            <Text style={[styles.avatarText, { color: theme.primary, fontSize: fs(46), lineHeight: fs(46) * 2.4 }]}>
               {(profile.displayName || user || '♪')[0].toUpperCase()}
             </Text>
           </View>
@@ -135,99 +131,78 @@ export function ProfileScreen() {
       </Pressable>
 
       <Pressable onPress={openEditName} style={styles.nameRow}>
-        <Text style={[styles.name, { color: theme.text }]}>
+        <Text style={[styles.name, { color: theme.text, fontSize: fs(24) }]}>
           {profile.displayName || user || 'Guest'}
         </Text>
-        <MaterialCommunityIcons name="pencil" size={18} color={theme.primary} />
+        <MaterialCommunityIcons name="pencil" size={fs(18)} color={theme.primary} />
       </Pressable>
 
       <Pressable onPress={openEditBio} style={styles.bioRow}>
-        <Text style={[styles.bio, { color: theme.mutedText }]}>
+        <Text style={[styles.bio, { color: theme.mutedText, fontSize: fs(14) }]}>
           {profile.bio || '+ ' + t.changeBio}
         </Text>
       </Pressable>
 
+      {/* КНОПКА НАСТРОЙКИ */}
+      <Pressable
+        onPress={() => navigation.navigate('Settings')}
+        style={[styles.settingsBtn, { backgroundColor: theme.surface, borderColor: theme.border }]}
+      >
+        <MaterialCommunityIcons name="cog" size={fs(22)} color={theme.primary} />
+        <Text style={[styles.settingsText, { color: theme.text, fontSize: fs(15) }]}>
+          {t.settingsTitle}
+        </Text>
+        <MaterialCommunityIcons name="chevron-right" size={fs(22)} color={theme.mutedText} />
+      </Pressable>
+
       <View style={styles.statsRow}>
         <View style={[styles.statBox, { backgroundColor: theme.surface, borderColor: theme.border }]}>
-          <Text style={[styles.statValue, { color: theme.primary }]}>{tracks.length}</Text>
-          <Text style={[styles.statLabel, { color: theme.mutedText }]}>{t.tracks}</Text>
+          <Text style={[styles.statValue, { color: theme.primary, fontSize: fs(22) }]}>{tracks.length}</Text>
+          <Text style={[styles.statLabel, { color: theme.mutedText, fontSize: fs(11) }]}>{t.tracks}</Text>
         </View>
         <View style={[styles.statBox, { backgroundColor: theme.surface, borderColor: theme.border }]}>
-          <Text style={[styles.statValue, { color: theme.primary }]}>0</Text>
-          <Text style={[styles.statLabel, { color: theme.mutedText }]}>{t.playlistsCount}</Text>
+          <Text style={[styles.statValue, { color: theme.primary, fontSize: fs(22) }]}>0</Text>
+          <Text style={[styles.statLabel, { color: theme.mutedText, fontSize: fs(11) }]}>{t.playlistsCount}</Text>
         </View>
         <View style={[styles.statBox, { backgroundColor: theme.surface, borderColor: theme.border }]}>
-          <Text style={[styles.statValue, { color: theme.primary }]}>0</Text>
-          <Text style={[styles.statLabel, { color: theme.mutedText }]}>{t.favoritesCount}</Text>
+          <Text style={[styles.statValue, { color: theme.primary, fontSize: fs(22) }]}>0</Text>
+          <Text style={[styles.statLabel, { color: theme.mutedText, fontSize: fs(11) }]}>{t.favoritesCount}</Text>
         </View>
       </View>
 
-      <Text style={[styles.sectionTitle, { color: theme.text }]}>{t.myTracks}</Text>
+      <Text style={[styles.sectionTitle, { color: theme.text, fontSize: fs(16) }]}>{t.myTracks}</Text>
       <View style={[styles.settingBlock, { backgroundColor: theme.surface, borderColor: theme.border }]}>
         <Pressable onPress={pickAudio} style={[styles.uploadBtn, { backgroundColor: theme.primary }]}>
-          <MaterialCommunityIcons name="music-note-plus" size={20} color="#FFF" />
-          <Text style={styles.uploadText}>{t.uploadTrack}</Text>
+          <MaterialCommunityIcons name="music-note-plus" size={fs(20)} color="#FFF" />
+          <Text style={[styles.uploadText, { fontSize: fs(15) }]}>{t.uploadTrack}</Text>
         </Pressable>
 
         {tracks.length === 0 ? (
-          <Text style={[styles.noTracks, { color: theme.mutedText }]}>{t.noTracks}</Text>
+          <Text style={[styles.noTracks, { color: theme.mutedText, fontSize: fs(13) }]}>{t.noTracks}</Text>
         ) : (
           tracks.map(tr => (
             <View key={tr.id} style={[styles.trackRow, { borderTopColor: theme.border }]}>
-              <MaterialCommunityIcons name="music" size={20} color={theme.primary} />
+              <MaterialCommunityIcons name="music" size={fs(20)} color={theme.primary} />
               <Pressable style={{ flex: 1 }} onPress={() => openRenameTrack(tr.id, tr.name)}>
-                <Text style={[styles.trackName, { color: theme.text }]} numberOfLines={1}>
+                <Text style={[styles.trackName, { color: theme.text, fontSize: fs(14) }]} numberOfLines={1}>
                   {tr.name}
                 </Text>
-                <Text style={[styles.trackHint, { color: theme.mutedText }]}>{t.renameTrack}</Text>
+                <Text style={[styles.trackHint, { color: theme.mutedText, fontSize: fs(11) }]}>{t.renameTrack}</Text>
               </Pressable>
               <Pressable onPress={() => confirmRemove(tr.id, tr.name)} hitSlop={8}>
-                <MaterialCommunityIcons name="close-circle" size={22} color={theme.mutedText} />
+                <MaterialCommunityIcons name="close-circle" size={fs(22)} color={theme.mutedText} />
               </Pressable>
             </View>
           ))
         )}
       </View>
 
-      <Text style={[styles.sectionTitle, { color: theme.text }]}>{t.theme}</Text>
-      <View style={[styles.settingBlock, { backgroundColor: theme.surface, borderColor: theme.border }]}>
-        <Pressable
-          onPress={() => setThemeName('light')}
-          style={[styles.themeBtn, themeName === 'light' && { backgroundColor: theme.primary }]}
-        >
-          <MaterialCommunityIcons name="white-balance-sunny" size={20} color={themeName === 'light' ? '#FFF' : theme.text} />
-          <Text style={[styles.themeText, { color: themeName === 'light' ? '#FFF' : theme.text }]}>{t.themeLight}</Text>
-        </Pressable>
-        <Pressable
-          onPress={() => setThemeName('dark')}
-          style={[styles.themeBtn, themeName === 'dark' && { backgroundColor: theme.primary }]}
-        >
-          <MaterialCommunityIcons name="moon-waning-crescent" size={20} color={themeName === 'dark' ? '#FFF' : theme.text} />
-          <Text style={[styles.themeText, { color: themeName === 'dark' ? '#FFF' : theme.text }]}>{t.themeDark}</Text>
-        </Pressable>
-      </View>
-
-      <Text style={[styles.sectionTitle, { color: theme.text }]}>{t.language}</Text>
-      <View style={[styles.settingBlock, { backgroundColor: theme.surface, borderColor: theme.border }]}>
-        {langs.map(l => (
-          <Pressable
-            key={l.code}
-            onPress={() => setLanguage(l.code)}
-            style={[styles.langBtn, language === l.code && { backgroundColor: theme.primary }]}
-          >
-            <Text style={styles.langFlag}>{l.flag}</Text>
-            <Text style={[styles.langLabel, { color: language === l.code ? '#FFF' : theme.text }]}>{l.label}</Text>
-            {language === l.code && <MaterialCommunityIcons name="check" size={20} color="#FFF" />}
-          </Pressable>
-        ))}
-      </View>
-
       <Pressable
         style={[styles.logoutButton, { backgroundColor: theme.primary }]}
         onPress={async () => { await logout(); navigation.replace('Login'); }}
       >
-        <MaterialCommunityIcons name="logout" size={20} color="#FFF" />
-        <Text style={styles.logoutText}>{t.logout}</Text>
+        <MaterialCommunityIcons name="logout" size={fs(20)} color="#FFF" />
+        <Text style={[styles.logoutText, { fontSize: fs(16) }]}>{t.logout}</Text>
       </Pressable>
 
       <EditModal
@@ -246,29 +221,29 @@ const styles = StyleSheet.create({
   container:    { flexGrow: 1, padding: 24, paddingTop: 48 },
   avatarWrap:   { alignSelf: 'center', marginTop: 8, position: 'relative' },
   avatar:       { width: 110, height: 110, borderRadius: 55, borderWidth: 2 },
-  avatarText:   { fontSize: 46, fontWeight: '900', lineHeight: 110, textAlign: 'center' },
+  avatarText:   { fontWeight: '900', textAlign: 'center' },
   cameraBadge:  { position: 'absolute', bottom: 4, right: 4, width: 34, height: 34, borderRadius: 17, justifyContent: 'center', alignItems: 'center', borderWidth: 3, borderColor: '#1A0511' },
   nameRow:      { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, marginTop: 16 },
-  name:         { fontSize: 24, fontWeight: '900' },
-  bioRow:       { alignItems: 'center', marginTop: 6, marginBottom: 24 },
-  bio:          { fontSize: 14, textAlign: 'center' },
+  name:         { fontWeight: '900' },
+  bioRow:       { alignItems: 'center', marginTop: 6, marginBottom: 20 },
+  bio:          { textAlign: 'center' },
+  settingsBtn:  {
+    flexDirection: 'row', alignItems: 'center', gap: 12,
+    padding: 16, borderRadius: 16, borderWidth: 1, marginBottom: 20,
+  },
+  settingsText: { flex: 1, fontWeight: '800' },
   statsRow:     { flexDirection: 'row', gap: 12, marginBottom: 24 },
   statBox:      { flex: 1, padding: 14, borderRadius: 14, borderWidth: 1, alignItems: 'center' },
-  statValue:    { fontSize: 22, fontWeight: '900' },
-  statLabel:    { fontSize: 11, marginTop: 4, textAlign: 'center' },
-  sectionTitle: { fontSize: 16, fontWeight: '900', marginBottom: 10, marginTop: 8 },
+  statValue:    { fontWeight: '900' },
+  statLabel:    { marginTop: 4, textAlign: 'center' },
+  sectionTitle: { fontWeight: '900', marginBottom: 10, marginTop: 8 },
   settingBlock: { borderRadius: 16, borderWidth: 1, padding: 8, marginBottom: 20 },
   uploadBtn:    { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, padding: 14, borderRadius: 12, marginBottom: 6 },
-  uploadText:   { color: '#FFF', fontWeight: '900', fontSize: 15 },
-  noTracks:     { fontSize: 13, textAlign: 'center', padding: 16, fontStyle: 'italic' },
+  uploadText:   { color: '#FFF', fontWeight: '900' },
+  noTracks:     { textAlign: 'center', padding: 16, fontStyle: 'italic' },
   trackRow:     { flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 12, paddingHorizontal: 8, borderTopWidth: 1 },
-  trackName:    { fontSize: 14, fontWeight: '700' },
-  trackHint:    { fontSize: 11, marginTop: 2 },
-  themeBtn:     { flexDirection: 'row', alignItems: 'center', gap: 10, padding: 14, borderRadius: 12 },
-  themeText:    { fontSize: 14, fontWeight: '800' },
-  langBtn:      { flexDirection: 'row', alignItems: 'center', gap: 12, padding: 14, borderRadius: 12 },
-  langFlag:     { fontSize: 22 },
-  langLabel:    { flex: 1, fontSize: 14, fontWeight: '800' },
+  trackName:    { fontWeight: '700' },
+  trackHint:    { marginTop: 2 },
   logoutButton: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10, padding: 16, borderRadius: 16, marginTop: 8, marginBottom: 24 },
-  logoutText:   { color: '#FFFFFF', fontWeight: '900', fontSize: 16 }
+  logoutText:   { color: '#FFFFFF', fontWeight: '900' },
 });
