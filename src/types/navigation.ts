@@ -1,4 +1,4 @@
-export type RootStackParamList = {
+﻿export type RootStackParamList = {
   Login: undefined;
   Register: undefined;
   Main: undefined;
@@ -12,5 +12,6 @@ export type MainTabParamList = {
   Home: undefined;
   Services: undefined;
   News: undefined;
+  Favorites: undefined;
   Profile: undefined;
 };

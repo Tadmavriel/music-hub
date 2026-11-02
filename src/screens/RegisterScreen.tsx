@@ -1,7 +1,7 @@
 ﻿import React, { useState } from 'react';
 import {
   View, Text, TextInput, Pressable, StyleSheet,
-  KeyboardAvoidingView, ScrollView,
+  KeyboardAvoidingView, ScrollView, Platform,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -12,7 +12,9 @@ import { TopBar } from '../components/TopBar';
 type Props = NativeStackScreenProps<RootStackParamList, 'Register'>;
 
 export function RegisterScreen({ navigation }: Props) {
-  const { theme, t, register } = useApp();
+  const { theme, t, register, fontSizeMultiplier } = useApp();
+  const fs = (size: number) => size * fontSizeMultiplier;
+
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
@@ -31,7 +33,7 @@ export function RegisterScreen({ navigation }: Props) {
   return (
     <KeyboardAvoidingView
       style={[styles.screen, { backgroundColor: theme.background }]}
-      behavior="padding"
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <ScrollView
         contentContainerStyle={styles.scroll}
@@ -40,31 +42,47 @@ export function RegisterScreen({ navigation }: Props) {
       >
         <TopBar />
 
-        <View style={styles.logoWrap}>
-          <View style={[styles.logoCircle, { backgroundColor: theme.surface, borderColor: theme.primary }]}>
-            <MaterialCommunityIcons name="account-plus" size={56} color={theme.primary} />
+        <View style={styles.header}>
+          <View style={[styles.iconCircleOuter, { backgroundColor: theme.primary + '22' }]}>
+            <View style={[styles.iconCircleInner, { backgroundColor: theme.surface, borderColor: theme.primary }]}>
+              <MaterialCommunityIcons name="account-plus" size={fs(48)} color={theme.primary} />
+            </View>
           </View>
         </View>
 
-        <Text style={[styles.appName, { color: theme.primary }]}>{t.appName}</Text>
-        <Text style={[styles.title, { color: theme.text }]}>{t.registerTitle}</Text>
-        <Text style={[styles.subtitle, { color: theme.mutedText }]}>{t.registerSubtitle}</Text>
+        <Text style={[styles.appName, { color: theme.primary, fontSize: fs(11) }]}>
+          {t.appName}
+        </Text>
+        <Text style={[styles.title, { color: theme.text, fontSize: fs(24) }]}>
+          {t.registerTitle}
+        </Text>
+        <Text style={[styles.subtitle, { color: theme.mutedText, fontSize: fs(13) }]}>
+          {t.registerSubtitle}
+        </Text>
 
         <View style={[styles.card, { backgroundColor: theme.surface, borderColor: theme.border }]}>
-          <Text style={[styles.label, { color: theme.mutedText }]}>{t.login}</Text>
-          <TextInput
-            style={[styles.input, { color: theme.text, borderColor: theme.border, backgroundColor: theme.surfaceMuted }]}
-            placeholder={t.loginPlaceholder}
-            placeholderTextColor={theme.placeholder}
-            autoCapitalize="none"
-            value={login}
-            onChangeText={setLogin}
-          />
-
-          <Text style={[styles.label, { color: theme.mutedText }]}>{t.password}</Text>
-          <View style={[styles.passRow, { borderColor: theme.border, backgroundColor: theme.surfaceMuted }]}>
+          <Text style={[styles.label, { color: theme.mutedText, fontSize: fs(12) }]}>
+            {t.login.toUpperCase()}
+          </Text>
+          <View style={[styles.inputWrap, { borderColor: theme.border, backgroundColor: theme.surfaceMuted }]}>
+            <MaterialCommunityIcons name="account-outline" size={fs(20)} color={theme.mutedText} />
             <TextInput
-              style={[styles.passInput, { color: theme.text }]}
+              style={[styles.input, { color: theme.text, fontSize: fs(15) }]}
+              placeholder={t.loginPlaceholder}
+              placeholderTextColor={theme.placeholder}
+              autoCapitalize="none"
+              value={login}
+              onChangeText={setLogin}
+            />
+          </View>
+
+          <Text style={[styles.label, { color: theme.mutedText, fontSize: fs(12) }]}>
+            {t.password.toUpperCase()}
+          </Text>
+          <View style={[styles.inputWrap, { borderColor: theme.border, backgroundColor: theme.surfaceMuted }]}>
+            <MaterialCommunityIcons name="lock-outline" size={fs(20)} color={theme.mutedText} />
+            <TextInput
+              style={[styles.input, { color: theme.text, fontSize: fs(15) }]}
               placeholder={t.passwordPlaceholder}
               placeholderTextColor={theme.placeholder}
               secureTextEntry={!showPass}
@@ -72,27 +90,37 @@ export function RegisterScreen({ navigation }: Props) {
               value={password}
               onChangeText={setPassword}
             />
-            <Pressable onPress={() => setShowPass(v => !v)} style={styles.eyeBtn} hitSlop={8}>
+            <Pressable onPress={() => setShowPass(v => !v)} hitSlop={8}>
               <MaterialCommunityIcons
                 name={showPass ? 'eye-off-outline' : 'eye-outline'}
-                size={22}
+                size={fs(20)}
                 color={theme.mutedText}
               />
             </Pressable>
           </View>
 
-          <Text style={[styles.label, { color: theme.mutedText }]}>{t.repeatPassword}</Text>
-          <TextInput
-            style={[styles.input, { color: theme.text, borderColor: theme.border, backgroundColor: theme.surfaceMuted }]}
-            placeholder={t.repeatPasswordPlaceholder}
-            placeholderTextColor={theme.placeholder}
-            secureTextEntry={!showPass}
-            autoCapitalize="none"
-            value={confirm}
-            onChangeText={setConfirm}
-          />
+          <Text style={[styles.label, { color: theme.mutedText, fontSize: fs(12) }]}>
+            {t.repeatPassword.toUpperCase()}
+          </Text>
+          <View style={[styles.inputWrap, { borderColor: theme.border, backgroundColor: theme.surfaceMuted }]}>
+            <MaterialCommunityIcons name="lock-check-outline" size={fs(20)} color={theme.mutedText} />
+            <TextInput
+              style={[styles.input, { color: theme.text, fontSize: fs(15) }]}
+              placeholder={t.repeatPasswordPlaceholder}
+              placeholderTextColor={theme.placeholder}
+              secureTextEntry={!showPass}
+              autoCapitalize="none"
+              value={confirm}
+              onChangeText={setConfirm}
+            />
+          </View>
 
-          {error ? <Text style={styles.error}>{error}</Text> : null}
+          {error ? (
+            <View style={[styles.errorBox, { backgroundColor: '#E5484D22' }]}>
+              <MaterialCommunityIcons name="alert-circle-outline" size={fs(16)} color="#E5484D" />
+              <Text style={[styles.errorText, { fontSize: fs(13) }]}>{error}</Text>
+            </View>
+          ) : null}
 
           <Pressable
             style={({ pressed }) => [
@@ -101,12 +129,15 @@ export function RegisterScreen({ navigation }: Props) {
             ]}
             onPress={handleRegister}
           >
-            <Text style={styles.buttonText}>{t.registerButton}</Text>
+            <Text style={[styles.buttonText, { fontSize: fs(16) }]}>{t.registerButton}</Text>
+            <MaterialCommunityIcons name="check" size={fs(20)} color="#FFF" />
           </Pressable>
 
           <Pressable onPress={() => navigation.replace('Login')} style={styles.linkBtn}>
-            <MaterialCommunityIcons name="arrow-left" size={18} color={theme.primary} />
-            <Text style={[styles.linkText, { color: theme.primary }]}>{t.backToLogin}</Text>
+            <MaterialCommunityIcons name="arrow-left" size={fs(16)} color={theme.primary} />
+            <Text style={[styles.linkText, { color: theme.primary, fontSize: fs(13), fontWeight: '900' }]}>
+              {' '}{t.backToLogin}
+            </Text>
           </Pressable>
         </View>
       </ScrollView>
@@ -117,20 +148,27 @@ export function RegisterScreen({ navigation }: Props) {
 const styles = StyleSheet.create({
   screen:     { flex: 1 },
   scroll:     { flexGrow: 1, padding: 24, paddingTop: 48, paddingBottom: 48 },
-  logoWrap:   { alignItems: 'center', marginBottom: 20 },
-  logoCircle: { width: 110, height: 110, borderRadius: 55, borderWidth: 2, justifyContent: 'center', alignItems: 'center' },
-  appName:    { fontSize: 12, fontWeight: '800', letterSpacing: 3, textAlign: 'center', marginBottom: 8 },
-  title:      { fontSize: 24, fontWeight: '800', textAlign: 'center', marginBottom: 6 },
-  subtitle:   { fontSize: 14, textAlign: 'center', marginBottom: 24 },
-  card:       { padding: 22, borderRadius: 20, borderWidth: 1 },
-  label:      { fontSize: 12, fontWeight: '700', letterSpacing: 0.5, marginBottom: 8, marginTop: 12 },
-  input:      { height: 52, borderRadius: 12, borderWidth: 1, paddingHorizontal: 16, fontSize: 16 },
-  passRow:    { height: 52, flexDirection: 'row', alignItems: 'center', borderRadius: 12, borderWidth: 1 },
-  passInput:  { flex: 1, height: '100%', paddingHorizontal: 16, fontSize: 16 },
-  eyeBtn:     { paddingHorizontal: 14 },
-  error:      { fontSize: 14, marginTop: 12, fontWeight: '600', color: '#E5484D' },
-  button:     { height: 54, borderRadius: 14, justifyContent: 'center', alignItems: 'center', marginTop: 20 },
-  buttonText: { color: '#FFFFFF', fontSize: 16, fontWeight: '800', letterSpacing: 0.3 },
-  linkBtn:    { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, marginTop: 14, paddingVertical: 8 },
-  linkText:   { fontSize: 14, fontWeight: '700' }
+
+  header:     { alignItems: 'center', marginBottom: 16 },
+  iconCircleOuter: { width: 110, height: 110, borderRadius: 55, alignItems: 'center', justifyContent: 'center' },
+  iconCircleInner: { width: 90, height: 90, borderRadius: 45, borderWidth: 2, alignItems: 'center', justifyContent: 'center' },
+
+  appName:    { fontWeight: '900', letterSpacing: 3, textAlign: 'center', marginBottom: 6 },
+  title:      { fontWeight: '900', textAlign: 'center', marginBottom: 4 },
+  subtitle:   { textAlign: 'center', marginBottom: 20 },
+
+  card:       { padding: 22, borderRadius: 24, borderWidth: 1 },
+  label:      { fontWeight: '900', letterSpacing: 1, marginBottom: 8, marginTop: 12 },
+
+  inputWrap:  { flexDirection: 'row', alignItems: 'center', height: 52, borderRadius: 14, borderWidth: 1, paddingHorizontal: 14, gap: 10 },
+  input:      { flex: 1, height: '100%' },
+
+  errorBox:   { flexDirection: 'row', alignItems: 'center', gap: 6, padding: 10, borderRadius: 10, marginTop: 12 },
+  errorText:  { color: '#E5484D', fontWeight: '700', flex: 1 },
+
+  button:     { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, height: 54, borderRadius: 16, marginTop: 20 },
+  buttonText: { color: '#FFFFFF', fontWeight: '900', letterSpacing: 0.3 },
+
+  linkBtn:    { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 16, paddingVertical: 8 },
+  linkText:   { fontWeight: '600' },
 });
