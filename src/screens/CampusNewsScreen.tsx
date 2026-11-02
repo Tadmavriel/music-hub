@@ -89,7 +89,7 @@ const articles: Article[] = [
   },
 ];
 
-export function MusicNewsScreen() {
+export function CampusNewsScreen() {
   const { theme, language, fontSizeMultiplier } = useApp();
   const fs = (size: number) => size * fontSizeMultiplier;
 

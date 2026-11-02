@@ -4,7 +4,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { HomeScreen } from '../screens/HomeScreen';
 import { ServicesScreen } from '../screens/ServicesScreen';
-import { MusicNewsScreen } from '../screens/MusicNewsScreen';
+import { CampusNewsScreen } from '../screens/CampusNewsScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
 import type { MainTabParamList } from '../types/navigation';
 import { useApp } from '../context/AppContext';
@@ -55,7 +55,7 @@ export function MainTabs() {
       />
       <Tab.Screen
         name="News"
-        component={MusicNewsScreen}
+        component={CampusNewsScreen}
         options={{
           tabBarLabel: t.news,
           tabBarIcon: ({ color, size }) => (
