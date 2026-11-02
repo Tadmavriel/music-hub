@@ -1,14 +1,13 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import {
-  View, Text, TextInput, Pressable, StyleSheet, ScrollView,
-  KeyboardAvoidingView,
+  View, Text, TextInput, Pressable, StyleSheet,
+  KeyboardAvoidingView, ScrollView,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../types/navigation';
 import { useApp } from '../context/AppContext';
 import { TopBar } from '../components/TopBar';
-import { VinylRecord } from '../components/VinylRecord';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Register'>;
 
@@ -25,7 +24,7 @@ export function RegisterScreen({ navigation }: Props) {
     if (password.length < 6) { setError(t.minPassword); return; }
     if (password !== confirm) { setError(t.passwordsMismatch); return; }
     const err = await register(login, password);
-    if (err) { setError('Error'); return; }
+    if (err) { setError(err); return; }
     navigation.replace('Main');
   };
 
@@ -41,8 +40,10 @@ export function RegisterScreen({ navigation }: Props) {
       >
         <TopBar />
 
-        <View style={styles.vinylWrap}>
-          <VinylRecord size={130} color={theme.primary} />
+        <View style={styles.logoWrap}>
+          <View style={[styles.logoCircle, { backgroundColor: theme.surface, borderColor: theme.primary }]}>
+            <MaterialCommunityIcons name="account-plus" size={56} color={theme.primary} />
+          </View>
         </View>
 
         <Text style={[styles.appName, { color: theme.primary }]}>{t.appName}</Text>
@@ -57,7 +58,7 @@ export function RegisterScreen({ navigation }: Props) {
             placeholderTextColor={theme.placeholder}
             autoCapitalize="none"
             value={login}
-            onChangeText={(v) => { setLogin(v); setError(''); }}
+            onChangeText={setLogin}
           />
 
           <Text style={[styles.label, { color: theme.mutedText }]}>{t.password}</Text>
@@ -69,7 +70,7 @@ export function RegisterScreen({ navigation }: Props) {
               secureTextEntry={!showPass}
               autoCapitalize="none"
               value={password}
-              onChangeText={(v) => { setPassword(v); setError(''); }}
+              onChangeText={setPassword}
             />
             <Pressable onPress={() => setShowPass(v => !v)} style={styles.eyeBtn} hitSlop={8}>
               <MaterialCommunityIcons
@@ -88,7 +89,7 @@ export function RegisterScreen({ navigation }: Props) {
             secureTextEntry={!showPass}
             autoCapitalize="none"
             value={confirm}
-            onChangeText={(v) => { setConfirm(v); setError(''); }}
+            onChangeText={setConfirm}
           />
 
           {error ? <Text style={styles.error}>{error}</Text> : null}
@@ -116,17 +117,18 @@ export function RegisterScreen({ navigation }: Props) {
 const styles = StyleSheet.create({
   screen:     { flex: 1 },
   scroll:     { flexGrow: 1, padding: 24, paddingTop: 48, paddingBottom: 48 },
-  vinylWrap:  { alignItems: 'center', marginBottom: 20 },
+  logoWrap:   { alignItems: 'center', marginBottom: 20 },
+  logoCircle: { width: 110, height: 110, borderRadius: 55, borderWidth: 2, justifyContent: 'center', alignItems: 'center' },
   appName:    { fontSize: 12, fontWeight: '800', letterSpacing: 3, textAlign: 'center', marginBottom: 8 },
-  title:      { fontSize: 26, fontWeight: '800', textAlign: 'center', marginBottom: 6 },
-  subtitle:   { fontSize: 15, textAlign: 'center', marginBottom: 24 },
+  title:      { fontSize: 24, fontWeight: '800', textAlign: 'center', marginBottom: 6 },
+  subtitle:   { fontSize: 14, textAlign: 'center', marginBottom: 24 },
   card:       { padding: 22, borderRadius: 20, borderWidth: 1 },
   label:      { fontSize: 12, fontWeight: '700', letterSpacing: 0.5, marginBottom: 8, marginTop: 12 },
   input:      { height: 52, borderRadius: 12, borderWidth: 1, paddingHorizontal: 16, fontSize: 16 },
   passRow:    { height: 52, flexDirection: 'row', alignItems: 'center', borderRadius: 12, borderWidth: 1 },
   passInput:  { flex: 1, height: '100%', paddingHorizontal: 16, fontSize: 16 },
   eyeBtn:     { paddingHorizontal: 14 },
-  error:      { fontSize: 14, marginTop: 12, fontWeight: '600', color: '#FF6B8A' },
+  error:      { fontSize: 14, marginTop: 12, fontWeight: '600', color: '#E5484D' },
   button:     { height: 54, borderRadius: 14, justifyContent: 'center', alignItems: 'center', marginTop: 20 },
   buttonText: { color: '#FFFFFF', fontSize: 16, fontWeight: '800', letterSpacing: 0.3 },
   linkBtn:    { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, marginTop: 14, paddingVertical: 8 },
