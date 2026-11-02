@@ -5,6 +5,7 @@ export type RootStackParamList = {
   Details: { serviceId: string; title: string };
   NewsDetails: { announcementId: number };
   Settings: undefined;
+  EventRegistration: undefined;
 };
 
 export type MainTabParamList = {

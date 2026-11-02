@@ -1,0 +1,261 @@
+import React, { useState } from 'react';
+import {
+  Alert, KeyboardAvoidingView, Platform, Pressable,
+  ScrollView, StyleSheet, Text, TextInput, View,
+} from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useApp } from '../context/AppContext';
+
+type EventType = 'Концерт' | 'Фестиваль' | 'Мастер-класс' | '';
+
+type FormErrors = {
+  fullName?: string;
+  group?: string;
+  eventType?: string;
+  eventDate?: string;
+  participants?: string;
+  comment?: string;
+  accepted?: string;
+};
+
+const eventTypes = ['Концерт', 'Фестиваль', 'Мастер-класс'] as const;
+
+// Проверяет, что дата реальная (2026-02-31 не пройдёт)
+function isRealDate(value: string) {
+  const [year, month, day] = value.split('-').map(Number);
+  const date = new Date(year, month - 1, day);
+  return (
+    date.getFullYear() === year &&
+    date.getMonth() === month - 1 &&
+    date.getDate() === day
+  );
+}
+
+export function EventRegistrationScreen() {
+  const { theme, fontSizeMultiplier } = useApp();
+  const fs = (size: number) => size * fontSizeMultiplier;
+
+  const [fullName, setFullName] = useState('');
+  const [group, setGroup] = useState('');
+  const [eventType, setEventType] = useState<EventType>('');
+  const [eventDate, setEventDate] = useState('');
+  const [participants, setParticipants] = useState('1');
+  const [comment, setComment] = useState('');
+  const [accepted, setAccepted] = useState(false);
+  const [errors, setErrors] = useState<FormErrors>({});
+
+  // Убирает ошибку только у того поля, которое пользователь начал менять
+  const clearError = (field: keyof FormErrors) => {
+    setErrors(current => ({ ...current, [field]: undefined }));
+  };
+
+  function validate(): FormErrors {
+    const next: FormErrors = {};
+
+    if (fullName.trim().length < 3) {
+      next.fullName = 'Введите минимум 3 символа';
+    }
+
+    if (!group.trim()) {
+      next.group = 'Введите название группы';
+    }
+
+    if (!eventType) {
+      next.eventType = 'Выберите тип события';
+    }
+
+    const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+    if (!datePattern.test(eventDate)) {
+      next.eventDate = 'Формат даты: ГГГГ-ММ-ДД';
+    } else if (!isRealDate(eventDate)) {
+      next.eventDate = 'Такой даты не существует';
+    } else {
+      const selected = new Date(eventDate + 'T00:00:00');
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (selected < today) {
+        next.eventDate = 'Нельзя выбрать прошедшую дату';
+      }
+    }
+
+    const count = Number(participants);
+    if (!Number.isInteger(count) || count < 1 || count > 5) {
+      next.participants = 'Введите целое число от 1 до 5';
+    }
+
+    if (comment.trim().length < 10) {
+      next.comment = 'Введите минимум 10 символов';
+    }
+
+    if (!accepted) {
+      next.accepted = 'Необходимо согласие с правилами';
+    }
+
+    return next;
+  }
+
+  function handleSubmit() {
+    const nextErrors = validate();
+    setErrors(nextErrors);
+    if (Object.keys(nextErrors).length > 0) {
+      return;
+    }
+    Alert.alert('Готово', 'Вы успешно записались на событие');
+  }
+
+  const inputStyle = (hasError: boolean) => [
+    styles.input,
+    {
+      backgroundColor: theme.surface,
+      borderColor: hasError ? '#E5484D' : theme.border,
+      color: theme.text,
+      fontSize: fs(16),
+    },
+  ];
+
+  const labelStyle = [styles.label, { color: theme.text, fontSize: fs(15) }];
+  const errorStyle = [styles.error, { fontSize: fs(13) }];
+
+  return (
+    <KeyboardAvoidingView
+      style={{ flex: 1, backgroundColor: theme.background }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      <ScrollView
+        contentContainerStyle={styles.screen}
+        keyboardShouldPersistTaps="handled"
+      >
+        <Text style={[styles.title, { color: theme.text, fontSize: fs(26) }]}>
+          Запись на музыкальное событие
+        </Text>
+
+        <Text style={labelStyle}>Имя и фамилия</Text>
+        <TextInput
+          style={inputStyle(!!errors.fullName)}
+          value={fullName}
+          onChangeText={(value) => { setFullName(value); clearError('fullName'); }}
+          placeholder="Введите имя и фамилию"
+          placeholderTextColor={theme.placeholder}
+          maxLength={80}
+        />
+        {errors.fullName && <Text style={errorStyle}>{errors.fullName}</Text>}
+
+        <Text style={labelStyle}>Группа</Text>
+        <TextInput
+          style={inputStyle(!!errors.group)}
+          value={group}
+          onChangeText={(value) => { setGroup(value); clearError('group'); }}
+          placeholder="Например, ПИ-24-2к"
+          placeholderTextColor={theme.placeholder}
+          maxLength={30}
+        />
+        {errors.group && <Text style={errorStyle}>{errors.group}</Text>}
+
+        <Text style={labelStyle}>Тип события</Text>
+        <View style={styles.options}>
+          {eventTypes.map(item => {
+            const active = eventType === item;
+            return (
+              <Pressable
+                key={item}
+                onPress={() => { setEventType(item); clearError('eventType'); }}
+                style={[
+                  styles.option,
+                  { backgroundColor: theme.surfaceMuted, borderColor: theme.border },
+                  active && { backgroundColor: theme.primary, borderColor: theme.primary },
+                ]}
+              >
+                <Text
+                  style={{
+                    color: active ? theme.white : theme.text,
+                    fontSize: fs(14),
+                    fontWeight: '700',
+                  }}
+                >
+                  {item}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
+        {errors.eventType && <Text style={errorStyle}>{errors.eventType}</Text>}
+
+        <Text style={labelStyle}>Дата события</Text>
+        <TextInput
+          style={inputStyle(!!errors.eventDate)}
+          value={eventDate}
+          onChangeText={(value) => { setEventDate(value); clearError('eventDate'); }}
+          placeholder="ГГГГ-ММ-ДД, например 2026-12-15"
+          placeholderTextColor={theme.placeholder}
+          keyboardType="numbers-and-punctuation"
+          maxLength={10}
+        />
+        {errors.eventDate && <Text style={errorStyle}>{errors.eventDate}</Text>}
+
+        <Text style={labelStyle}>Количество участников</Text>
+        <TextInput
+          style={inputStyle(!!errors.participants)}
+          value={participants}
+          onChangeText={(value) => { setParticipants(value); clearError('participants'); }}
+          placeholder="От 1 до 5"
+          placeholderTextColor={theme.placeholder}
+          keyboardType="numeric"
+          maxLength={3}
+        />
+        {errors.participants && <Text style={errorStyle}>{errors.participants}</Text>}
+
+        <Text style={labelStyle}>Комментарий</Text>
+        <TextInput
+          style={[inputStyle(!!errors.comment), styles.multiline]}
+          value={comment}
+          onChangeText={(value) => { setComment(value); clearError('comment'); }}
+          placeholder="Расскажите о себе или о своих пожеланиях"
+          placeholderTextColor={theme.placeholder}
+          multiline
+          maxLength={200}
+        />
+        <Text style={[styles.counter, { color: theme.mutedText, fontSize: fs(12) }]}>
+          {comment.length}/200
+        </Text>
+        {errors.comment && <Text style={errorStyle}>{errors.comment}</Text>}
+
+        <Pressable
+          style={styles.checkRow}
+          onPress={() => { setAccepted(!accepted); clearError('accepted'); }}
+        >
+          <MaterialCommunityIcons
+            name={accepted ? 'checkbox-marked' : 'checkbox-blank-outline'}
+            size={fs(26)}
+            color={theme.primary}
+          />
+          <Text style={{ color: theme.text, fontSize: fs(15), flex: 1 }}>
+            Я согласен с правилами мероприятия
+          </Text>
+        </Pressable>
+        {errors.accepted && <Text style={errorStyle}>{errors.accepted}</Text>}
+
+        <Pressable
+          onPress={handleSubmit}
+          style={[styles.button, { backgroundColor: theme.primary }]}
+        >
+          <Text style={[styles.buttonText, { fontSize: fs(16) }]}>Записаться</Text>
+        </Pressable>
+      </ScrollView>
+    </KeyboardAvoidingView>
+  );
+}
+
+const styles = StyleSheet.create({
+  screen:     { padding: 20, paddingTop: 48, gap: 8 },
+  title:      { fontWeight: '900', marginBottom: 8 },
+  label:      { fontWeight: '700', marginTop: 8 },
+  input:      { borderWidth: 1, borderRadius: 12, padding: 14 },
+  multiline:  { minHeight: 90, textAlignVertical: 'top' },
+  counter:    { textAlign: 'right' },
+  error:      { color: '#E5484D' },
+  options:    { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  option:     { paddingVertical: 12, paddingHorizontal: 14, borderRadius: 12, borderWidth: 1 },
+  checkRow:   { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 12 },
+  button:     { padding: 16, borderRadius: 16, alignItems: 'center', marginTop: 16, marginBottom: 24 },
+  buttonText: { color: '#FFFFFF', fontWeight: '900' },
+});

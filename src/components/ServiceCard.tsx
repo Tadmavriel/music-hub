@@ -27,7 +27,7 @@ export function ServiceCard({ service, onPress }: Props) {
         },
       ]}
     >
-      <View style={[styles.iconBox, { backgroundColor: theme.surfaceMuted }]}>
+      <View style={[styles.iconBox, { backgroundColor: theme.primary + '22' }]}>
         <MaterialCommunityIcons
           name={service.icon as any}
           size={fs(26)}
@@ -62,19 +62,8 @@ export function ServiceCard({ service, onPress }: Props) {
 }
 
 const styles = StyleSheet.create({
-  card: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderRadius: 20,
-    padding: 16,
-    marginBottom: 10,
-    gap: 16,
-  },
-  iconBox: {
-    width: 52, height: 52, borderRadius: 14,
-    alignItems: 'center', justifyContent: 'center',
-  },
+  card:        { flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderRadius: 20, padding: 16, marginBottom: 10, gap: 16 },
+  iconBox:     { width: 52, height: 52, borderRadius: 14, alignItems: 'center', justifyContent: 'center' },
   copy:        { flex: 1 },
   title:       { fontWeight: '900', marginBottom: 2 },
   description: { },

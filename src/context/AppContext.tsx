@@ -13,7 +13,6 @@ const SESSION_KEY = '@music/session';
 const TRACKS_KEY = '@music/tracks';
 const PROFILE_KEY = '@music/profile';
 const SETTINGS_KEY = '@music/settings';
-const FAVORITES_KEY = '@music/favorites';
 
 export type Theme = {
   background: string; surface: string; surfaceMuted: string; border: string;
@@ -21,32 +20,31 @@ export type Theme = {
   text: string; mutedText: string; placeholder: string; white: string;
 };
 
+// УНИВЕРСИТЕТСКАЯ ПАЛИТРА (синяя)
 export const themes: Record<ThemeName, Theme> = {
   dark: {
-    background: '#120A0F', surface: '#1E1118', surfaceMuted: '#2A1822',
-    border: '#3A2430', primary: '#FF4D8D', primaryPressed: '#E63D7C',
-    accent: '#F5C451', text: '#F6EEF2', mutedText: '#B9A3AF',
-    placeholder: '#7D6572', white: '#FFFFFF'
+    background: '#0A1628', surface: '#152238', surfaceMuted: '#1E2F4A',
+    border: '#2A4060', primary: '#3B82F6', primaryPressed: '#2563EB',
+    accent: '#60A5FA', text: '#F0F6FF', mutedText: '#A0B4D0',
+    placeholder: '#6B7F9E', white: '#FFFFFF'
   },
   light: {
-    background: '#FAF6F8', surface: '#FFFFFF', surfaceMuted: '#F3ECF0',
-    border: '#E6D9E0', primary: '#E8336F', primaryPressed: '#CF2A62',
-    accent: '#C98A00', text: '#1C1218', mutedText: '#7A6571',
-    placeholder: '#A8949F', white: '#FFFFFF'
+    background: '#F4F8FC', surface: '#FFFFFF', surfaceMuted: '#E8F0FA',
+    border: '#C7D7E8', primary: '#0B66E4', primaryPressed: '#0952B8',
+    accent: '#0B66E4', text: '#092B55', mutedText: '#52677D',
+    placeholder: '#8FA3B8', white: '#FFFFFF'
   }
 };
 
 export const fontSizes: Record<FontScale, number> = {
-  small: 0.85,
-  normal: 1,
-  large: 1.25,
+  small: 0.85, normal: 1, large: 1.25,
 };
 
 export const translations = {
   ru: {
-    appName: 'MUSIC HUB',
+    appName: 'CAMPUS HUB',
     welcome: 'С возвращением!',
-    loginSubtitle: 'Войди, чтобы слушать музыку',
+    loginSubtitle: 'Войди в свой студенческий портал',
     login: 'Логин', password: 'Пароль',
     loginPlaceholder: 'Введите логин', passwordPlaceholder: 'Введите пароль',
     loginButton: 'Войти',
@@ -62,16 +60,15 @@ export const translations = {
     repeatPasswordPlaceholder: 'Ещё раз пароль',
     allFields: 'Заполните все поля',
     passwordsMismatch: 'Пароли не совпадают',
-    home: 'Главная', services: 'Сервисы', settings: 'Настройки', profile: 'Профиль',
-    news: 'Новости',
-    greeting: 'Сейчас играет',
+    home: 'Главная', services: 'Сервисы', news: 'Новости', profile: 'Профиль',
+    greeting: 'Добро пожаловать',
     quickAccess: 'Быстрый доступ',
-    allTracks: 'Все треки', allTracksSub: 'Полный список',
-    playlists: 'Плейлисты', playlistsSub: 'Твои подборки',
-    favorites: 'Избранное', favoritesSub: 'Что лайкнул',
-    servicesTitle: 'Сервисы', servicesSub: 'Всё для музыки',
+    allServices: 'Все сервисы', allServicesSub: 'Полный список',
+    schedule: 'Расписание', scheduleSub: 'Пары на сегодня',
+    library: 'Библиотека', librarySub: 'Книги и ресурсы',
+    servicesTitle: 'Сервисы', servicesSub: 'Всё для учёбы',
     profileTitle: 'Профиль',
-    tracks: 'Треков', playlistsCount: 'Плейлистов', favoritesCount: 'Избранных',
+    tracks: 'Сервисов', playlistsCount: 'Заданий', favoritesCount: 'Заметок',
     settingsTitle: 'Настройки',
     appearance: 'Внешний вид',
     theme: 'Тема', themeLight: 'Светлая', themeDark: 'Тёмная',
@@ -81,9 +78,9 @@ export const translations = {
     resetConfirm: 'Сбросить все настройки?',
     language: 'Язык', langRu: 'Русский', langEn: 'English', langKk: 'Қазақша',
     logout: 'Выйти', back: 'Назад',
-    uploadTrack: 'Загрузить трек',
-    myTracks: 'Мои треки',
-    noTracks: 'Пока нет загруженных треков',
+    uploadTrack: 'Загрузить файл',
+    myTracks: 'Мои файлы',
+    noTracks: 'Пока нет загруженных файлов',
     remove: 'Удалить',
     changeName: 'Изменить имя',
     changePhoto: 'Изменить фото',
@@ -91,15 +88,15 @@ export const translations = {
     save: 'Сохранить', cancel: 'Отмена',
     newName: 'Новое имя', newBio: 'Коротко о себе',
     renameTrack: 'Переименовать',
-    newTrackName: 'Новое название трека',
-    trackName: 'Название трека',
+    newTrackName: 'Новое название',
+    trackName: 'Название',
     confirmDelete: 'Удалить?',
     yes: 'Да', no: 'Нет'
   },
   en: {
-    appName: 'MUSIC HUB',
+    appName: 'CAMPUS HUB',
     welcome: 'Welcome back!',
-    loginSubtitle: 'Sign in to listen',
+    loginSubtitle: 'Sign in to your student portal',
     login: 'Login', password: 'Password',
     loginPlaceholder: 'Enter login', passwordPlaceholder: 'Enter password',
     loginButton: 'Sign in',
@@ -115,16 +112,15 @@ export const translations = {
     repeatPasswordPlaceholder: 'Repeat password',
     allFields: 'Fill in all fields',
     passwordsMismatch: 'Passwords do not match',
-    home: 'Home', services: 'Services', settings: 'Settings', profile: 'Profile',
-    news: 'News',
-    greeting: 'Now playing',
+    home: 'Home', services: 'Services', news: 'News', profile: 'Profile',
+    greeting: 'Welcome',
     quickAccess: 'Quick access',
-    allTracks: 'All tracks', allTracksSub: 'Full list',
-    playlists: 'Playlists', playlistsSub: 'Your collections',
-    favorites: 'Favorites', favoritesSub: 'What you liked',
-    servicesTitle: 'Services', servicesSub: 'Everything for music',
+    allServices: 'All services', allServicesSub: 'Full list',
+    schedule: 'Schedule', scheduleSub: 'Today classes',
+    library: 'Library', librarySub: 'Books and resources',
+    servicesTitle: 'Services', servicesSub: 'Everything for study',
     profileTitle: 'Profile',
-    tracks: 'Tracks', playlistsCount: 'Playlists', favoritesCount: 'Favorites',
+    tracks: 'Services', playlistsCount: 'Tasks', favoritesCount: 'Notes',
     settingsTitle: 'Settings',
     appearance: 'Appearance',
     theme: 'Theme', themeLight: 'Light', themeDark: 'Dark',
@@ -134,9 +130,9 @@ export const translations = {
     resetConfirm: 'Reset all settings?',
     language: 'Language', langRu: 'Русский', langEn: 'English', langKk: 'Қазақша',
     logout: 'Sign out', back: 'Back',
-    uploadTrack: 'Upload track',
-    myTracks: 'My tracks',
-    noTracks: 'No tracks yet',
+    uploadTrack: 'Upload file',
+    myTracks: 'My files',
+    noTracks: 'No files yet',
     remove: 'Remove',
     changeName: 'Change name',
     changePhoto: 'Change photo',
@@ -144,15 +140,15 @@ export const translations = {
     save: 'Save', cancel: 'Cancel',
     newName: 'New name', newBio: 'Short bio',
     renameTrack: 'Rename',
-    newTrackName: 'New track name',
-    trackName: 'Track name',
+    newTrackName: 'New name',
+    trackName: 'Name',
     confirmDelete: 'Delete?',
     yes: 'Yes', no: 'No'
   },
   kk: {
-    appName: 'MUSIC HUB',
+    appName: 'CAMPUS HUB',
     welcome: 'Қайта келуіңізбен!',
-    loginSubtitle: 'Музыка тыңдау үшін кіріңіз',
+    loginSubtitle: 'Студенттік порталға кіріңіз',
     login: 'Логин', password: 'Құпиясөз',
     loginPlaceholder: 'Логинді енгізіңіз', passwordPlaceholder: 'Құпиясөзді енгізіңіз',
     loginButton: 'Кіру',
@@ -168,16 +164,15 @@ export const translations = {
     repeatPasswordPlaceholder: 'Қайта енгізіңіз',
     allFields: 'Барлық өрісті толтырыңыз',
     passwordsMismatch: 'Құпиясөздер сәйкес емес',
-    home: 'Басты', services: 'Қызметтер', settings: 'Параметрлер', profile: 'Профиль',
-    news: 'Жаңалықтар',
-    greeting: 'Қазір ойнап жатыр',
+    home: 'Басты', services: 'Қызметтер', news: 'Жаңалықтар', profile: 'Профиль',
+    greeting: 'Қош келдіңіз',
     quickAccess: 'Жылдам қатынау',
-    allTracks: 'Барлық тректер', allTracksSub: 'Толық тізім',
-    playlists: 'Плейлисттер', playlistsSub: 'Топтамалар',
-    favorites: 'Таңдаулылар', favoritesSub: 'Ұнаған тректер',
-    servicesTitle: 'Қызметтер', servicesSub: 'Музыка үшін бәрі',
+    allServices: 'Барлық қызметтер', allServicesSub: 'Толық тізім',
+    schedule: 'Кесте', scheduleSub: 'Бүгінгі сабақтар',
+    library: 'Кітапхана', librarySub: 'Кітаптар мен ресурстар',
+    servicesTitle: 'Қызметтер', servicesSub: 'Оқу үшін бәрі',
     profileTitle: 'Профиль',
-    tracks: 'Тректер', playlistsCount: 'Плейлисттер', favoritesCount: 'Таңдаулылар',
+    tracks: 'Қызметтер', playlistsCount: 'Тапсырмалар', favoritesCount: 'Жазбалар',
     settingsTitle: 'Параметрлер',
     appearance: 'Сыртқы түрі',
     theme: 'Тақырып', themeLight: 'Ашық', themeDark: 'Қараңғы',
@@ -187,9 +182,9 @@ export const translations = {
     resetConfirm: 'Барлық параметрлерді қалпына келтіру?',
     language: 'Тіл', langRu: 'Русский', langEn: 'English', langKk: 'Қазақша',
     logout: 'Шығу', back: 'Артқа',
-    uploadTrack: 'Трек жүктеу',
-    myTracks: 'Менің тректерім',
-    noTracks: 'Әзірге тректер жоқ',
+    uploadTrack: 'Файл жүктеу',
+    myTracks: 'Менің файлдарым',
+    noTracks: 'Әзірге файлдар жоқ',
     remove: 'Жою',
     changeName: 'Атын өзгерту',
     changePhoto: 'Фотосуретті өзгерту',
@@ -197,8 +192,8 @@ export const translations = {
     save: 'Сақтау', cancel: 'Болдырмау',
     newName: 'Жаңа аты', newBio: 'Өзіңіз туралы қысқаша',
     renameTrack: 'Қайта атау',
-    newTrackName: 'Трек атауы',
-    trackName: 'Трек атауы',
+    newTrackName: 'Жаңа атауы',
+    trackName: 'Атауы',
     confirmDelete: 'Жою?',
     yes: 'Иә', no: 'Жоқ'
   }
@@ -222,8 +217,6 @@ type AppContextType = {
   isReady: boolean;
   hasAccount: boolean;
   tracks: Track[];
-  favorites: string[];
-  toggleFavorite: (id: string) => Promise<void>;
   login: (login: string, password: string) => Promise<string | null>;
   register: (login: string, password: string) => Promise<string | null>;
   logout: () => Promise<void>;
@@ -248,18 +241,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [isReady, setIsReady] = useState(false);
   const [tracks, setTracks] = useState<Track[]>([]);
   const [profile, setProfile] = useState<Profile>(DEFAULT_PROFILE);
-  const [favorites, setFavorites] = useState<string[]>([]);
 
   useEffect(() => {
     (async () => {
       try {
-        const [acc, sess, trk, prof, settings, fav] = await AsyncStorage.multiGet([
-          ACCOUNT_KEY, SESSION_KEY, TRACKS_KEY, PROFILE_KEY, SETTINGS_KEY, FAVORITES_KEY
+        const [acc, sess, trk, prof, settings] = await AsyncStorage.multiGet([
+          ACCOUNT_KEY, SESSION_KEY, TRACKS_KEY, PROFILE_KEY, SETTINGS_KEY
         ]);
         setHasAccount(!!acc[1]);
         if (sess[1]) setUser(sess[1]);
         if (trk[1]) setTracks(JSON.parse(trk[1]));
-        if (fav[1]) setFavorites(JSON.parse(fav[1]));
         if (prof[1]) setProfile(JSON.parse(prof[1]));
         else if (acc[1]) {
           const a: Account = JSON.parse(acc[1]);
@@ -319,21 +310,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
     await AsyncStorage.setItem(TRACKS_KEY, JSON.stringify(next));
   };
 
-  const toggleFavorite = async (id: string) => {
-    const next = favorites.includes(id)
-      ? favorites.filter(f => f !== id)
-      : [id, ...favorites];
-    setFavorites(next);
-    await AsyncStorage.setItem(FAVORITES_KEY, JSON.stringify(next));
-  };
-
   const removeTrack = async (id: string) => {
     const next = tracks.filter(t => t.id !== id);
     setTracks(next);
     await AsyncStorage.setItem(TRACKS_KEY, JSON.stringify(next));
-    const nextFav = favorites.filter(f => f !== id);
-    setFavorites(nextFav);
-    await AsyncStorage.setItem(FAVORITES_KEY, JSON.stringify(nextFav));
   };
 
   const renameTrack = async (id: string, newName: string) => {
@@ -365,7 +345,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       resetSettings,
       theme: themes[themeName], t: translations[language],
       nextLanguage, toggleTheme,
-      user, profile, isReady, hasAccount, tracks, favorites, toggleFavorite,
+      user, profile, isReady, hasAccount, tracks,
       login, register, logout, addTrack, removeTrack, renameTrack, updateProfile
     }}>
       {children}

@@ -6,6 +6,7 @@ import { RegisterScreen } from '../screens/RegisterScreen';
 import { DetailsScreen } from '../screens/DetailsScreen';
 import { NewsDetailsScreen } from '../screens/NewsDetailsScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
+import { EventRegistrationScreen } from '../screens/EventRegistrationScreen';
 import { MainTabs } from './MainTabs';
 import type { RootStackParamList } from '../types/navigation';
 
@@ -27,6 +28,7 @@ export function RootNavigator() {
         <Stack.Screen name="Details" component={DetailsScreen} />
         <Stack.Screen name="NewsDetails" component={NewsDetailsScreen} />
         <Stack.Screen name="Settings" component={SettingsScreen} />
+        <Stack.Screen name="EventRegistration" component={EventRegistrationScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
